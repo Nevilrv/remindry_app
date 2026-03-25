@@ -30,6 +30,7 @@ class AppAssets {
   static const String vaultUnSelect = "assets/images/vaultUnSelect.svg";
   static const String settingSelected = "assets/images/settingSelected.svg";
   static const String settingUnSelect = "assets/images/settingUnSelect.svg";
+  static const String expenseSelected = "assets/images/expenseSelected.svg";
   static const String mail = "assets/icons/mail.svg";
   static const String aiIcon = "assets/images/aiIcon.png";
 
@@ -52,4 +53,12 @@ class AppAssets {
   static const String smile = "assets/icons/smile.svg";
   static const String paperclip = "assets/icons/paperclip.svg";
   static const String send = "assets/icons/send.svg";
+  static const String food = "assets/icons/food.svg";
+  static const String transport = "assets/icons/transport.svg";
+  static const String fun = "assets/icons/fun.svg";
+  static const String shooping = "assets/icons/shooping.svg";
+  static const String bills = "assets/icons/bills.svg";
+  static const String travel = "assets/icons/travel.svg";
+  static const String other = "assets/icons/other.svg";
+  static const String expensesCardBg = "assets/images/moneyCardBg.svg";
 }

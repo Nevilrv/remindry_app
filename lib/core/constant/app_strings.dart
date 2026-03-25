@@ -163,4 +163,43 @@ class AppStrings {
   static const String notifications = "Notifications";
   static const String noNotifications = "No notifications yet";
   static const String notificationsDesc = "We'll let you know when something important happens.";
+
+  // Money & Debt
+  static const String moneyAndDebt = "Money & Debt";
+  static const String totalYouOwe = "Total You Owe";
+  static const String due5thFeb = "Due: 5th Feb";
+  static const String totalOweAmount = "₹2,500";
+  static const String acrossPendingDebts = "Across 3 pending debts";
+  static const String paidBack = "Paid back";
+  static const String paidBackProgress = "₹1,750 / ₹4,250";
+  static const String paid = "Paid";
+  static const String remaining = "Remaining";
+  static const String debt = "Debt";
+  static const String spendingBreakdown = "Spending Breakdown";
+  static const String pendingDebts = "Pending Debts";
+  static const String raviDebtInsight =
+      "Ravi's Debt Is Due In 2 Days. You Spent 18% More On Food This Month.";
+
+  // Add Expense
+  static const String addExpense = "Add Expense";
+  static const String amountLabel = "Amount (₹)";
+  static const String amountHint = "0.00";
+  static const String description = "Description";
+  static const String descriptionHint = "e.g. Dinner at Main St";
+  static const String food = "Food";
+  static const String transport = "Transport";
+  static const String fun = "Fun";
+  static const String shopping = "Shopping";
+  static const String health = "Health";
+  static const String travel = "Travel";
+  static const String other = "Other";
+  static const String whoPaid = "Who Paid?";
+  static const String iPaid = "I paid";
+  static const String someoneOwesMe = "Someone Owes me";
+  static const String theyPaid = "They paid";
+  static const String iOweThem = "I owe them";
+  static const String splitEqually = "Split equally";
+  static const String everyonePaysShare = "Everyone pays their share";
+  static const String splitWith = "Split With";
+  static const String saveExpense = "Save Expense";
 }

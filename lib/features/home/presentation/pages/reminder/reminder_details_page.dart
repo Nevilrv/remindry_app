@@ -11,7 +11,20 @@ import 'package:untitled1/core/utils/widgets/common_app_bar_remindry.dart';
 import 'package:untitled1/core/utils/widgets/common_dialog.dart';
 
 class ReminderDetailsPage extends StatelessWidget {
-  const ReminderDetailsPage({super.key});
+  final String icon;
+  final Color iconBgColor;
+  final Color iconColor;
+  final String title;
+  final String subtitle;
+
+  const ReminderDetailsPage({
+    super.key,
+    required this.icon,
+    required this.iconBgColor,
+    required this.iconColor,
+    required this.title,
+    required this.subtitle,
+  });
 
   void _showCompletionDialog(BuildContext context) {
     showDialog(
@@ -45,16 +58,16 @@ class ReminderDetailsPage extends StatelessWidget {
                   width: 124.w,
                   height: 124.w,
                   decoration: BoxDecoration(
-                    color: AppColors.orangeLight,
+                    color: iconBgColor,
                     borderRadius: BorderRadius.circular(32.r),
                   ),
                   child: Center(
                     child: SvgPicture.asset(
-                      AppAssets.tablet,
+                      icon,
                       width: 41.w,
                       height: 41.w,
-                      colorFilter: const ColorFilter.mode(
-                        AppColors.orange,
+                      colorFilter: ColorFilter.mode(
+                        iconColor,
                         BlendMode.srcIn,
                       ),
                     ),
@@ -63,7 +76,7 @@ class ReminderDetailsPage extends StatelessWidget {
                 26.hBox,
                 // Title
                 Text(
-                  "Take Antibiotics",
+                  title,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 28.sp,
@@ -74,7 +87,7 @@ class ReminderDetailsPage extends StatelessWidget {
                 5.hBox,
                 // Subtitle
                 Text(
-                  "8:00 AM • After Breakfast",
+                  subtitle,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 18.sp,
@@ -120,7 +133,6 @@ class ReminderDetailsPage extends StatelessWidget {
                                 ),
                               ),
                             ),
-
                             8.wBox,
                             Text(
                               "AI Insights",
@@ -134,7 +146,9 @@ class ReminderDetailsPage extends StatelessWidget {
                         ),
                         5.hBox,
                         Text(
-                          "Take With Plenty Of Water. Do Not Skip Doses. Complete Full Course Even If You Feel Better.",
+                          title == "Take Antibiotics"
+                              ? "Take With Plenty Of Water. Do Not Skip Doses. Complete Full Course Even If You Feel Better."
+                              : "Eat A Light Balanced Meal Before Your Checkup. Avoid Heavy Caffeine. Ensure You Have Your Previous Test Reports.",
                           style: TextStyle(
                             fontSize: 12.sp,
                             color: AppColors.black,

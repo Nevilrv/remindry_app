@@ -18,7 +18,8 @@
         "get_it",
         "go_router",
         "google_fonts",
-        "image_picker"
+        "image_picker",
+        "intl"
       ],
       "devDependencies": [
         "flutter_lints",
@@ -48,6 +49,22 @@
         "stream_channel",
         "test_api",
         "vector_math"
+      ]
+    },
+    {
+      "name": "intl",
+      "version": "0.19.0",
+      "dependencies": [
+        "clock",
+        "meta",
+        "path"
+      ]
+    },
+    {
+      "name": "flip_card_swiper",
+      "version": "1.0.0",
+      "dependencies": [
+        "flutter"
       ]
     },
     {
@@ -688,13 +705,6 @@
       "dependencies": [
         "collection",
         "meta"
-      ]
-    },
-    {
-      "name": "flip_card_swiper",
-      "version": "1.0.0",
-      "dependencies": [
-        "flutter"
       ]
     }
   ],

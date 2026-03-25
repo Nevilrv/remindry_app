@@ -17,6 +17,7 @@ import 'package:untitled1/features/home/presentation/pages/health/add_visit_page
 import 'package:untitled1/features/home/presentation/pages/health/health_care_page.dart';
 import 'package:untitled1/features/home/presentation/pages/warranty/add_warranty_page.dart';
 import 'package:untitled1/features/home/presentation/pages/warranty/warranties_page.dart';
+import 'package:untitled1/features/home/presentation/pages/expense/add_expense_page.dart';
 
 import 'package:untitled1/features/notification/notification_screen.dart';
 import '../features/onboarding/presentation/pages/onboarding_page.dart';
@@ -43,6 +44,7 @@ class AppRoutes {
   static const String addWarranty = "/addWarranty";
   static const String notification = "/notification";
   static const String reminderDetails = "/reminderDetails";
+  static const String addExpense = "/addExpense";
 
   static final router = GoRouter(
     initialLocation: initial,
@@ -120,7 +122,16 @@ class AppRoutes {
       GoRoute(
         path: reminderDetails,
         name: reminderDetails,
-        builder: (context, state) => const ReminderDetailsPage(),
+        builder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>;
+          return ReminderDetailsPage(
+            icon: extra['icon'] as String,
+            iconBgColor: extra['iconBgColor'] as Color,
+            iconColor: extra['iconColor'] as Color,
+            title: extra['title'] as String,
+            subtitle: extra['subtitle'] as String,
+          );
+        },
       ),
       GoRoute(
         path: aiStart,
@@ -146,6 +157,11 @@ class AppRoutes {
         path: notification,
         name: notification,
         builder: (context, state) => const NotificationScreen(),
+      ),
+      GoRoute(
+        path: addExpense,
+        name: addExpense,
+        builder: (context, state) => const AddExpensePage(),
       ),
     ],
   );
