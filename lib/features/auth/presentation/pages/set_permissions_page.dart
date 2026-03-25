@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:untitled1/core/constant/app_assets.dart';
 import 'package:untitled1/core/constant/app_strings.dart';
 import 'package:untitled1/core/constant/app_theme.dart';
 import 'package:untitled1/core/extentions/extentions.dart';
 import 'package:untitled1/core/utils/widgets/app_button.dart';
+import 'package:untitled1/core/utils/widgets/common_dialog.dart';
 import 'package:untitled1/features/auth/presentation/providers/permissions_provider.dart';
+import 'package:untitled1/routes/app_routes.dart';
 
 class SetPermissionsPage extends ConsumerWidget {
   const SetPermissionsPage({super.key});
@@ -16,18 +19,14 @@ class SetPermissionsPage extends ConsumerWidget {
     showDialog(
       context: context,
       barrierColor: Colors.black.withOpacity(0.5),
-      builder: (_) => Dialog(
-        backgroundColor: Colors.transparent,
-        insetPadding: const EdgeInsets.symmetric(horizontal: 10),
-        child: const _AllSetPopup(),
+      builder: (_) => const CommonDialog(
+        illustration: AppAssets.allSet,
+        title: "You're All Set!",
+        description: "Awesome! OTP Verified - You're\nLogged In!",
       ),
     ).then((_) {
       if (context.mounted) {
-        Navigator.pushNamedAndRemoveUntil(
-          context,
-          '/home',
-          (route) => false,
-        );
+        context.goNamed(AppRoutes.home);
       }
     });
   }
@@ -106,7 +105,7 @@ class SetPermissionsPage extends ConsumerWidget {
               // Skip for now
               Center(
                 child: GestureDetector(
-                  onTap: () => Navigator.pop(context),
+                  onTap: () => context.pop(),
                   child: Text(
                     AppStrings.skipForNow,
                     style: TextStyle(
@@ -121,53 +120,6 @@ class SetPermissionsPage extends ConsumerWidget {
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-
-/// You're All Set popup widget
-class _AllSetPopup extends StatelessWidget {
-  const _AllSetPopup();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      // margin: EdgeInsets.symmetric(horizontal: 20.w, vertical: 40.h),
-      padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 32.h),
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(24.r),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          SvgPicture.asset(
-            AppAssets.allSet,
-            height: 180.h,
-            fit: BoxFit.contain,
-          ),
-          24.hBox,
-          Text(
-            "You're All Set!",
-            style: TextStyle(
-              fontSize: 22.sp,
-              fontWeight: FontWeight.bold,
-              color: AppColors.blackLight,
-            ),
-          ),
-          12.hBox,
-          Text(
-            "Awesome! OTP Verified - You're\nLogged In!",
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 13.sp,
-              color: AppColors.black,
-              height: 1.5,
-            ),
-          ),
-        ],
       ),
     );
   }

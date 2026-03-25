@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:untitled1/core/constant/app_assets.dart';
 import 'package:untitled1/core/constant/app_strings.dart';
 import 'package:untitled1/core/extentions/extentions.dart';
@@ -57,7 +58,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
     if (currentIndex < onboardingData.length - 1) {
       setState(() => currentIndex++);
     } else {
-      Navigator.pushNamed(context, AppRoutes.login);
+      context.go(AppRoutes.login);
     }
   }
 

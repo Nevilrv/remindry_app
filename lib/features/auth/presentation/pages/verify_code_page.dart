@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:untitled1/core/constant/app_assets.dart';
 import 'package:untitled1/core/constant/app_strings.dart';
 import 'package:untitled1/core/constant/app_theme.dart';
@@ -40,7 +41,7 @@ class _VerifyCodeView extends ConsumerWidget {
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: GestureDetector(
-                  onTap: () => Navigator.pop(context),
+                  onTap: () => context.pop(),
                   child: Container(
                     width: 40.sp,
                     height: 40.sp,
@@ -162,7 +163,7 @@ class _VerifyCodeView extends ConsumerWidget {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 30.w),
               child: AppButton(
-                onTap: () => Navigator.pushNamed(context, AppRoutes.setPermissions),
+                onTap: () => context.pushNamed(AppRoutes.setPermissions),
                 title: AppStrings.verifyCode,
               ),
             ),
@@ -201,4 +202,3 @@ class _VerifyCodeView extends ConsumerWidget {
     );
   }
 }
-

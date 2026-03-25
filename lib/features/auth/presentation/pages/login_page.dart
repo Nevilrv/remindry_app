@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:country_picker/country_picker.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:untitled1/features/auth/presentation/providers/login_provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -168,7 +169,7 @@ class LoginPage extends ConsumerWidget {
                       ),
                       26.hBox,
                       AppButton(
-                        onTap: () => Navigator.pushNamed(context, AppRoutes.verifyCode),
+                        onTap: () => context.pushNamed(AppRoutes.verifyCode),
                         title: "Continue",
                       ),
                     ],
@@ -189,10 +190,7 @@ class LoginPage extends ConsumerWidget {
                             ),
                           ),
                           GestureDetector(
-                            onTap: () => Navigator.pushNamed(
-                              context,
-                              AppRoutes.createAccount,
-                            ),
+                            onTap: () => context.pushNamed(AppRoutes.createAccount),
                             child: Text(
                               AppStrings.createAccount,
                               style: TextStyle(
@@ -216,4 +214,3 @@ class LoginPage extends ConsumerWidget {
     );
   }
 }
-

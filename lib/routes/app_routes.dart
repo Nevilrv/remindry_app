@@ -1,16 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:untitled1/features/auth/presentation/pages/create_account_page.dart';
 import 'package:untitled1/features/auth/presentation/pages/login_page.dart';
 import 'package:untitled1/features/auth/presentation/pages/set_permissions_page.dart';
 import 'package:untitled1/features/auth/presentation/pages/verify_code_page.dart';
-import 'package:untitled1/features/home/presentation/pages/home_page.dart';
+import 'package:untitled1/features/home/presentation/pages/events/add_event_page.dart';
+import 'package:untitled1/features/home/presentation/pages/events/events_page.dart';
+import 'package:untitled1/features/home/presentation/pages/reminder/add_reminder_page.dart';
+import 'package:untitled1/features/home/presentation/pages/reminder/reminder_details_page.dart';
+import 'package:untitled1/features/home/presentation/pages/dashboard/ai_message_page.dart';
+import 'package:untitled1/features/home/presentation/pages/dashboard/ai_start_page.dart';
+import 'package:untitled1/features/home/presentation/pages/dashboard/main_dashboard.dart';
+import 'package:untitled1/features/home/presentation/pages/vault/scan_document_page.dart';
+import 'package:untitled1/features/home/presentation/pages/vault/review_document_page.dart';
+import 'package:untitled1/features/home/presentation/pages/health/add_visit_page.dart';
+import 'package:untitled1/features/home/presentation/pages/health/health_care_page.dart';
+import 'package:untitled1/features/home/presentation/pages/warranty/add_warranty_page.dart';
+import 'package:untitled1/features/home/presentation/pages/warranty/warranties_page.dart';
 import 'package:untitled1/features/onboarding/presentation/pages/onboarding_page.dart';
 import 'package:untitled1/features/onboarding/presentation/pages/splash_screen.dart';
 
-
-
 class AppRoutes {
-
   static const String initial = "/";
   static const String onboarding = "/onboarding";
   static const String login = "/login";
@@ -18,40 +28,117 @@ class AppRoutes {
   static const String verifyCode = "/verifyCode";
   static const String setPermissions = "/setPermissions";
   static const String home = "/home";
+  static const String aiStart = "/aiStart";
+  static const String aiMessage = "/aiMessage";
+  static const String scanDocument = "/scanDocument";
+  static const String reviewDocument = "/reviewDocument";
+  static const String addReminder = "/addReminder";
+  static const String events = "/events";
+  static const String addEvent = "/addEvent";
+  static const String healthCare = "/healthCare";
+  static const String addVisit = "/addVisit";
+  static const String warranties = "/warranties";
+  static const String addWarranty = "/addWarranty";
+  static const String reminderDetails = "/reminderDetails";
 
-
-  static Route onGenerate(RouteSettings settings) {
-    switch (settings.name) {
-      case initial:
-        return MaterialPageRoute(builder: (_) =>  SplashScreen());
-
-      case onboarding:
-        return MaterialPageRoute(
-            builder: (_) => const OnboardingPage());
-
-
-      case login:
-        return MaterialPageRoute(
-            builder: (_) => const LoginPage());
-
-      case createAccount:
-        return MaterialPageRoute(
-            builder: (_) => const CreateAccountPage());
-
-      case verifyCode:
-        return MaterialPageRoute(
-            builder: (_) => const VerifyCodePage());
-
-      case setPermissions:
-        return MaterialPageRoute(
-            builder: (_) => const SetPermissionsPage());
-
-      case home:
-        return MaterialPageRoute(
-            builder: (_) => const HomePage());
-
-      default:
-        return MaterialPageRoute(builder: (_) =>  SplashScreen());
-    }
-  }
+  static final router = GoRouter(
+    initialLocation: initial,
+    routes: [
+      GoRoute(
+        path: initial,
+        name: initial,
+        builder: (context, state) => SplashScreen(),
+      ),
+      GoRoute(
+        path: onboarding,
+        name: onboarding,
+        builder: (context, state) => const OnboardingPage(),
+      ),
+      GoRoute(
+        path: login,
+        name: login,
+        builder: (context, state) => const LoginPage(),
+      ),
+      GoRoute(
+        path: createAccount,
+        name: createAccount,
+        builder: (context, state) => const CreateAccountPage(),
+      ),
+      GoRoute(
+        path: verifyCode,
+        name: verifyCode,
+        builder: (context, state) => const VerifyCodePage(),
+      ),
+      GoRoute(
+        path: setPermissions,
+        name: setPermissions,
+        builder: (context, state) => const SetPermissionsPage(),
+      ),
+      GoRoute(
+        path: home,
+        name: home,
+        builder: (context, state) => const MainDashboard(),
+      ),
+      GoRoute(
+        path: addReminder,
+        name: addReminder,
+        builder: (context, state) => const AddReminderPage(),
+      ),
+      GoRoute(
+        path: events,
+        name: events,
+        builder: (context, state) => const EventsPage(),
+      ),
+      GoRoute(
+        path: addEvent,
+        name: addEvent,
+        builder: (context, state) => const AddEventPage(),
+      ),
+      GoRoute(
+        path: healthCare,
+        name: healthCare,
+        builder: (context, state) => const HealthCarePage(),
+      ),
+      GoRoute(
+        path: addVisit,
+        name: addVisit,
+        builder: (context, state) => const AddVisitPage(),
+      ),
+      GoRoute(
+        path: warranties,
+        name: warranties,
+        builder: (context, state) => const WarrantiesPage(),
+      ),
+      GoRoute(
+        path: addWarranty,
+        name: addWarranty,
+        builder: (context, state) => const AddWarrantyPage(),
+      ),
+      GoRoute(
+        path: reminderDetails,
+        name: reminderDetails,
+        builder: (context, state) => const ReminderDetailsPage(),
+      ),
+      GoRoute(
+        path: aiStart,
+        name: aiStart,
+        builder: (context, state) => const AiStartPage(),
+      ),
+      GoRoute(
+        path: aiMessage,
+        name: aiMessage,
+        builder: (context, state) => const AiMessagePage(),
+      ),
+      GoRoute(
+        path: scanDocument,
+        name: scanDocument,
+        builder: (context, state) => const ScanDocumentPage(),
+      ),
+      GoRoute(
+        path: reviewDocument,
+        name: reviewDocument,
+        builder: (context, state) => const ReviewDocumentPage(),
+      ),
+    ],
+  );
 }

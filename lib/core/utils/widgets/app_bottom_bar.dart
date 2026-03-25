@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:untitled1/core/constant/app_assets.dart';
 import 'package:untitled1/core/constant/app_theme.dart';
 import 'package:untitled1/features/home/presentation/providers/home_provider.dart';
+
+import '../../../routes/app_routes.dart';
 
 class AppBottomBar extends ConsumerWidget {
   const AppBottomBar({super.key});
@@ -15,7 +18,7 @@ class AppBottomBar extends ConsumerWidget {
     return Align(
       alignment: Alignment.bottomCenter,
       child: Container(
-        margin: EdgeInsets.only(bottom: 16.h),
+        margin: EdgeInsets.only(bottom: 5.h),
         width: 260.w,
         padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
         decoration: BoxDecoration(
@@ -77,7 +80,7 @@ class AppBottomBar extends ConsumerWidget {
               ),
             ),
             8.wBox,
-            _AiNavItem(onTap: () {}),
+            _AiNavItem(onTap: () => context.push(AppRoutes.aiStart)),
           ],
         ),
       ),

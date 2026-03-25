@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:untitled1/routes/app_routes.dart';
 
 class MyApp extends StatelessWidget {
@@ -9,10 +10,15 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ScreenUtilInit(
       designSize: const Size(375, 812),
-      child: MaterialApp(
+      child: MaterialApp.router(
         debugShowCheckedModeBanner: false,
-        onGenerateRoute: AppRoutes.onGenerate,
-        initialRoute: AppRoutes.home,
+        theme: ThemeData(
+          textTheme: GoogleFonts.interTextTheme(),
+          textSelectionTheme: const TextSelectionThemeData(
+            cursorColor: Colors.black,
+          ),
+        ),
+        routerConfig: AppRoutes.router,
       ),
     );
   }

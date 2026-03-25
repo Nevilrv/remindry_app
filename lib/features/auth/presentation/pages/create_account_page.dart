@@ -3,6 +3,7 @@ import 'package:country_picker/country_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:untitled1/core/constant/app_assets.dart';
 import 'package:untitled1/core/constant/app_strings.dart';
 import 'package:untitled1/core/constant/app_theme.dart';
@@ -241,7 +242,7 @@ class CreateAccountPage extends ConsumerWidget {
                               ),
                             ),
                             GestureDetector(
-                              onTap: () => Navigator.pop(context),
+                              onTap: () => context.pop(),
                               child: Text(
                                 AppStrings.logIn,
                                 style: TextStyle(
@@ -266,4 +267,3 @@ class CreateAccountPage extends ConsumerWidget {
     );
   }
 }
-
