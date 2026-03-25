@@ -12,7 +12,7 @@ class AppAssets {
   static const String onboarding_3 = "assets/images/onboarding_3.png";
   static const String onboarding_4 = "assets/images/onboarding_4.png";
   static const String notificationIcon = "assets/images/notification-icon.svg";
-
+  static const String alert = "assets/images/alert.svg";
   // Category icons
   static const String eventsIcon = "assets/images/events.svg";
   static const String healthIcon = "assets/images/health.svg";

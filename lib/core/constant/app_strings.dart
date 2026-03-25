@@ -158,4 +158,9 @@ class AppStrings {
   static const String aiInsightsDesc = "Set A Reminder To Claim Insurance For This Bill Within 30 Days?";
   static const String saveRemind = "Save & Remind";
   static const String documentsProcessedLocally = "Your documents are processed locally\non your device for maximum privacy.";
+
+  // Notifications
+  static const String notifications = "Notifications";
+  static const String noNotifications = "No notifications yet";
+  static const String notificationsDesc = "We'll let you know when something important happens.";
 }

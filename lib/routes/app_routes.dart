@@ -17,8 +17,10 @@ import 'package:untitled1/features/home/presentation/pages/health/add_visit_page
 import 'package:untitled1/features/home/presentation/pages/health/health_care_page.dart';
 import 'package:untitled1/features/home/presentation/pages/warranty/add_warranty_page.dart';
 import 'package:untitled1/features/home/presentation/pages/warranty/warranties_page.dart';
-import 'package:untitled1/features/onboarding/presentation/pages/onboarding_page.dart';
-import 'package:untitled1/features/onboarding/presentation/pages/splash_screen.dart';
+
+import 'package:untitled1/features/notification/notification_screen.dart';
+import '../features/onboarding/presentation/pages/onboarding_page.dart';
+import '../features/onboarding/presentation/pages/splash_screen.dart';
 
 class AppRoutes {
   static const String initial = "/";
@@ -39,6 +41,7 @@ class AppRoutes {
   static const String addVisit = "/addVisit";
   static const String warranties = "/warranties";
   static const String addWarranty = "/addWarranty";
+  static const String notification = "/notification";
   static const String reminderDetails = "/reminderDetails";
 
   static final router = GoRouter(
@@ -138,6 +141,11 @@ class AppRoutes {
         path: reviewDocument,
         name: reviewDocument,
         builder: (context, state) => const ReviewDocumentPage(),
+      ),
+      GoRoute(
+        path: notification,
+        name: notification,
+        builder: (context, state) => const NotificationScreen(),
       ),
     ],
   );
