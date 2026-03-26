@@ -69,9 +69,9 @@ class AppBottomBar extends ConsumerWidget {
                     ),
                     12.wBox,
                     _NavItem(
-                      selectedIcon: AppAssets.settingSelected,
-                      unselectedIcon: AppAssets.settingUnSelect,
-                      label: "Settings",
+                      selectedIcon: AppAssets.expenseSelected,
+                      unselectedIcon: AppAssets.expenseSelected,
+                      label: "Expense",
                       isSelected: provider.selectedTab == 2,
                       onTap: () => provider.setTab(2),
                     ),

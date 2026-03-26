@@ -301,6 +301,8 @@ class _CategoryRow extends ConsumerWidget {
               context.pushNamed(AppRoutes.healthCare);
             } else if (index == 2) {
               context.pushNamed(AppRoutes.warranties);
+            } else if (index == 3) {
+              provider.setTab(2); // Switch to Money & Debt tab
             }
           },
           child: _CategoryItem(
@@ -528,7 +530,16 @@ class _TodaysReminders extends StatelessWidget {
           child: Column(
             children: [
               GestureDetector(
-                onTap: () => context.pushNamed(AppRoutes.reminderDetails),
+                onTap: () => context.pushNamed(
+                  AppRoutes.reminderDetails,
+                  extra: {
+                    'icon': AppAssets.tablet,
+                    'iconBgColor': AppColors.lightOrange,
+                    'iconColor': AppColors.orange,
+                    'title': "Take Antibiotics",
+                    'subtitle': "8:00 AM • After Breakfast",
+                  },
+                ),
                 child: _ReminderTile(
                   assetPath: AppAssets.tablet,
                   iconBgColor: AppColors.lightOrange,
@@ -543,14 +554,26 @@ class _TodaysReminders extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: 16.w),
                 child: const Divider(height: 1, color: AppColors.lightGray1),
               ),
-              _ReminderTile(
-                assetPath: AppAssets.medical,
-                iconBgColor: AppColors.lightBlueBox,
-                title: "Dr.Smith Chekup",
-                subtitle: "2:30 AM • Cardiology",
-                badge: "TODAY",
-                badgeBgColor: AppColors.badgeGray,
-                badgeTextColor: AppColors.badgeGrayText,
+              GestureDetector(
+                onTap: () => context.pushNamed(
+                  AppRoutes.reminderDetails,
+                  extra: {
+                    'icon': AppAssets.medical,
+                    'iconBgColor': AppColors.lightBlueBox,
+                    'iconColor': AppColors.primary,
+                    'title': "Dr.Smith Chekup",
+                    'subtitle': "2:30 AM • Cardiology",
+                  },
+                ),
+                child: _ReminderTile(
+                  assetPath: AppAssets.medical,
+                  iconBgColor: AppColors.lightBlueBox,
+                  title: "Dr.Smith Chekup",
+                  subtitle: "2:30 AM • Cardiology",
+                  badge: "TODAY",
+                  badgeBgColor: AppColors.badgeGray,
+                  badgeTextColor: AppColors.badgeGrayText,
+                ),
               ),
             ],
           ),

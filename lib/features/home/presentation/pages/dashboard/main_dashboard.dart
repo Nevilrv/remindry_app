@@ -5,7 +5,7 @@ import 'package:untitled1/core/utils/widgets/app_bottom_bar.dart';
 import 'package:untitled1/features/home/presentation/pages/dashboard/ai_start_page.dart';
 
 import 'package:untitled1/features/home/presentation/pages/dashboard/home_view.dart';
-import 'package:untitled1/features/home/presentation/pages/dashboard/settings_view.dart';
+import 'package:untitled1/features/home/presentation/pages/expense/money_and_debt_view.dart';
 import 'package:untitled1/features/home/presentation/pages/dashboard/vault_view.dart';
 import 'package:untitled1/features/home/presentation/providers/home_provider.dart';
 
@@ -19,7 +19,7 @@ class MainDashboard extends ConsumerWidget {
     final List<Widget> screens = [
       const HomeView(),
       const VaultView(),
-      const SettingsView(),
+      const MoneyAndDebtView(),
       const AiStartPage(),
     ];
 
