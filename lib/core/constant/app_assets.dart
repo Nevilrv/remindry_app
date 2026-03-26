@@ -45,6 +45,7 @@ class AppAssets {
   static const String edit = "assets/icons/edit.svg";
   static const String heartlayer = "assets/icons/heartlayer.svg";
   static const String headphone = "assets/icons/headphone.svg";
+  static const String heart = "assets/icons/heart.svg";
   static const String iphone = "assets/icons/iphone.svg";
   static const String gallery = "assets/icons/gallery.svg";
   static const String reportdoc = "assets/icons/reportdoc.svg";
@@ -54,8 +55,9 @@ class AppAssets {
   static const String paperclip = "assets/icons/paperclip.svg";
   static const String send = "assets/icons/send.svg";
   static const String setting = "assets/images/setting.svg";
-  static const String call = "assets/images/call.svg";
+  static const String edit_1 = "assets/images/edit_1.svg";
   // static const String edit = "assets/images/edit.svg";
+  static const String call_1 = "assets/images/call_1.svg";
   static const String person = "assets/images/person.svg";
   static const String food = "assets/icons/food.svg";
   static const String transport = "assets/icons/transport.svg";
@@ -65,4 +67,11 @@ class AppAssets {
   static const String travel = "assets/icons/travel.svg";
   static const String other = "assets/icons/other.svg";
   static const String expensesCardBg = "assets/images/moneyCardBg.svg";
+  static const String ads = "assets/icons/ads.svg";
+  static const String backup = "assets/icons/backup.svg";
+  static const String chat = "assets/icons/chat.svg";
+  static const String goPremium = "assets/icons/go_premium.svg";
+  static const String king = "assets/icons/king.svg";
+  static const String close = "assets/icons/close.svg";
+  static const String bulb = "assets/icons/bulb.svg";
 }

@@ -25,6 +25,8 @@ import 'package:untitled1/features/notification/notification_screen.dart';
 import '../features/home/presentation/pages/health/health_care_page.dart' show HealthCarePage;
 import '../features/onboarding/presentation/pages/onboarding_page.dart';
 import '../features/onboarding/presentation/pages/splash_screen.dart';
+import '../features/profile/screen/edit_full_name_screen.dart';
+import '../features/profile/screen/edit_phone_number_screen.dart';
 import '../features/profile/screen/profile_screen.dart';
 
 class AppRoutes {
@@ -50,6 +52,8 @@ class AppRoutes {
   static const String reminderDetails = "/reminderDetails";
   static const String addExpense = "/addExpense";
   static const String profile = "/profile";
+  static const String editFullName = "/editFullName";
+  static const String editPhoneNumber = "/editPhoneNumber";
 
   static final router = GoRouter(
     initialLocation: initial,
@@ -58,7 +62,14 @@ class AppRoutes {
       GoRoute(path: onboarding, name: onboarding, builder: (context, state) => const OnboardingPage()),
       GoRoute(path: login, name: login, builder: (context, state) => const LoginPage()),
       GoRoute(path: createAccount, name: createAccount, builder: (context, state) => const CreateAccountPage()),
-      GoRoute(path: verifyCode, name: verifyCode, builder: (context, state) => const VerifyCodePage()),
+      GoRoute(
+        path: verifyCode,
+        name: verifyCode,
+        builder: (context, state) {
+          final isFromProfile = state.extra as bool? ?? false;
+          return VerifyCodePage(isFromProfile: isFromProfile);
+        },
+      ),
       GoRoute(path: setPermissions, name: setPermissions, builder: (context, state) => const SetPermissionsPage()),
       GoRoute(path: home, name: home, builder: (context, state) => const MainDashboard()),
       GoRoute(path: addReminder, name: addReminder, builder: (context, state) => const AddReminderPage()),
@@ -89,6 +100,8 @@ class AppRoutes {
       GoRoute(path: notification, name: notification, builder: (context, state) => const NotificationScreen()),
       GoRoute(path: addExpense, name: addExpense, builder: (context, state) => const AddExpensePage()),
       GoRoute(path: profile, name: profile, builder: (context, state) => const ProfileScreen()),
+      GoRoute(path: editFullName, name: editFullName, builder: (context, state) => const EditFullNameScreen()),
+      GoRoute(path: editPhoneNumber, name: editPhoneNumber, builder: (context, state) => const EditPhoneNumberScreen()),
     ],
   );
 }

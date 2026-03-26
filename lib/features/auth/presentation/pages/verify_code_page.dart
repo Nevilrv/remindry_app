@@ -13,16 +13,18 @@ import 'package:untitled1/features/auth/presentation/providers/otp_provider.dart
 import 'package:untitled1/routes/app_routes.dart';
 
 class VerifyCodePage extends StatelessWidget {
-  const VerifyCodePage({super.key});
+  final bool isFromProfile;
+  const VerifyCodePage({super.key, this.isFromProfile = false});
 
   @override
   Widget build(BuildContext context) {
-    return const _VerifyCodeView();
+    return _VerifyCodeView(isFromProfile: isFromProfile);
   }
 }
 
 class _VerifyCodeView extends ConsumerWidget {
-  const _VerifyCodeView();
+  final bool isFromProfile;
+  const _VerifyCodeView({this.isFromProfile = false});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -163,7 +165,13 @@ class _VerifyCodeView extends ConsumerWidget {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 30.w),
               child: AppButton(
-                onTap: () => context.pushNamed(AppRoutes.setPermissions),
+                onTap: () {
+                  if (isFromProfile) {
+                    context.pop();
+                  } else {
+                    context.pushNamed(AppRoutes.setPermissions);
+                  }
+                },
                 title: AppStrings.verifyCode,
               ),
             ),

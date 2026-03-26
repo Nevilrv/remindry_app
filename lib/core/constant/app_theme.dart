@@ -28,11 +28,15 @@ class AppColors {
   static const Color lightGray12 = Color(0xffDDDDDD);
   static const Color lightGray13 = Color(0xffF6F6F6);
   static const Color lightGray14 = Color(0xff929292);
+  static const Color lightGray15 = Color(0xffECF0F1);
   static const Color white = Color(0xffFFFFFF);
   static const Color black = Color(0xff000000);
   static const Color blackLight = Color(0xff2C2C2C);
   static const Color black1 = Color(0xff2D3436);
+  static const Color black2 = Color(0xff09090B);
   static const Color purple = Color(0xff6366F1);
+  static const Color purple1 = Color(0xff2D1B4E);
+  static const Color purple2 = Color(0xff1A0A2E);
 
   // New common colors for reminders
   static const Color orange = Color(0xffF59E0B);
@@ -48,6 +52,7 @@ class AppColors {
   static const Color pinkGradient = Color(0xffFF61AD);
   static const Color redGradient = Color(0xffFF2719);
   static const Color red = Color(0xffEF4444);
+  static const Color red1 = Color(0xff3B0A1A);
   static const Color green = Color(0xff10B981);
   static const Color lightBlue = Color(0xffDBEAFE);
 
