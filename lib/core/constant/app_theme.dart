@@ -29,6 +29,7 @@ class AppColors {
   static const Color white = Color(0xffFFFFFF);
   static const Color black = Color(0xff000000);
   static const Color blackLight = Color(0xff2C2C2C);
+  static const Color black1 = Color(0xff2D3436);
   static const Color purple = Color(0xff6366F1);
 
   // New common colors for reminders

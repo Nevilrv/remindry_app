@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:untitled1/core/constant/app_assets.dart';
 import 'package:untitled1/core/constant/app_strings.dart';
 import 'package:untitled1/core/constant/app_theme.dart';
 import 'package:untitled1/core/extentions/extentions.dart';
 import 'package:untitled1/core/utils/widgets/app_button.dart';
-import 'package:untitled1/core/utils/widgets/common_dialog.dart';
 import 'package:untitled1/features/auth/presentation/providers/permissions_provider.dart';
 import 'package:untitled1/routes/app_routes.dart';
+
+import '../../../../core/utils/widgets/common_dialog.dart';
 
 class SetPermissionsPage extends ConsumerWidget {
   const SetPermissionsPage({super.key});
@@ -48,22 +48,14 @@ class SetPermissionsPage extends ConsumerWidget {
               // Title
               Text(
                 AppStrings.setPermissions,
-                style: TextStyle(
-                  fontSize: 26.sp,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.blackLight,
-                ),
+                style: TextStyle(fontSize: 26.sp, fontWeight: FontWeight.bold, color: AppColors.blackLight),
               ),
               8.hBox,
 
               // Subtitle
               Text(
                 AppStrings.permissionsSubtitle,
-                style: TextStyle(
-                  fontSize: 16.sp,
-                  color: AppColors.gray1,
-                  fontWeight: FontWeight.w400,
-                ),
+                style: TextStyle(fontSize: 16.sp, color: AppColors.gray1, fontWeight: FontWeight.w400),
               ),
               32.hBox,
 
@@ -96,10 +88,7 @@ class SetPermissionsPage extends ConsumerWidget {
               const Spacer(),
 
               // Get Started button
-              AppButton(
-                onTap: () => _showAllSetPopup(context),
-                title: AppStrings.getStarted,
-              ),
+              AppButton(onTap: () => _showAllSetPopup(context), title: AppStrings.getStarted),
               16.hBox,
 
               // Skip for now
@@ -108,11 +97,7 @@ class SetPermissionsPage extends ConsumerWidget {
                   onTap: () => context.pop(),
                   child: Text(
                     AppStrings.skipForNow,
-                    style: TextStyle(
-                      fontSize: 13.sp,
-                      color: AppColors.secondary,
-                      fontWeight: FontWeight.w500,
-                    ),
+                    style: TextStyle(fontSize: 13.sp, color: AppColors.secondary, fontWeight: FontWeight.w500),
                   ),
                 ),
               ),
@@ -126,12 +111,7 @@ class SetPermissionsPage extends ConsumerWidget {
 }
 
 class _PermissionTile extends StatelessWidget {
-  const _PermissionTile({
-    required this.title,
-    required this.description,
-    required this.value,
-    required this.onChanged,
-  });
+  const _PermissionTile({required this.title, required this.description, required this.value, required this.onChanged});
 
   final String title;
   final String description;
@@ -155,11 +135,7 @@ class _PermissionTile extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: TextStyle(
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.blackLight,
-                  ),
+                  style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold, color: AppColors.blackLight),
                 ),
                 6.hBox,
                 Text(

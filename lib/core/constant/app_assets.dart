@@ -52,4 +52,8 @@ class AppAssets {
   static const String smile = "assets/icons/smile.svg";
   static const String paperclip = "assets/icons/paperclip.svg";
   static const String send = "assets/icons/send.svg";
+  static const String setting = "assets/images/setting.svg";
+  static const String call = "assets/images/call.svg";
+  // static const String edit = "assets/images/edit.svg";
+  static const String person = "assets/images/person.svg";
 }
