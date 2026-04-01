@@ -62,15 +62,7 @@ class ReminderDetailsPage extends StatelessWidget {
                     borderRadius: BorderRadius.circular(32.r),
                   ),
                   child: Center(
-                    child: SvgPicture.asset(
-                      icon,
-                      width: 41.w,
-                      height: 41.w,
-                      colorFilter: ColorFilter.mode(
-                        iconColor,
-                        BlendMode.srcIn,
-                      ),
-                    ),
+                    child: SvgPicture.asset(icon, width: 41.w, height: 41.w),
                   ),
                 ),
                 26.hBox,

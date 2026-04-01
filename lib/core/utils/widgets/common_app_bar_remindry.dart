@@ -35,7 +35,7 @@ class CommonAppBarRemindry extends StatelessWidget
       ),
       child: Container(
         padding: EdgeInsets.only(
-          top: MediaQuery.of(context).padding.top,
+          top: MediaQuery.of(context).padding.top + 10.h,
           left: showBackButton ? 24.w : 0,
           right: 16.w,
           bottom: 12.h,

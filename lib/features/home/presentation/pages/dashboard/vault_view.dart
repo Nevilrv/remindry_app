@@ -90,6 +90,7 @@ class _VaultViewState extends State<VaultView> {
                 _pickImage(ImageSource.gallery);
               },
             ),
+
             24.hBox,
           ],
         ),
@@ -139,7 +140,7 @@ class _VaultViewState extends State<VaultView> {
                 ),
                 12.wBox,
                 GestureDetector(
-                  onTap: () => context.push(AppRoutes.scanDocument),
+                  onTap: () => _showUploadBottomSheet(),
                   child: SvgPicture.asset(
                     AppAssets.add,
                     height: 46.h,

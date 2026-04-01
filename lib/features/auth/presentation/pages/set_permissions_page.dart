@@ -48,14 +48,22 @@ class SetPermissionsPage extends ConsumerWidget {
               // Title
               Text(
                 AppStrings.setPermissions,
-                style: TextStyle(fontSize: 26.sp, fontWeight: FontWeight.bold, color: AppColors.blackLight),
+                style: TextStyle(
+                  fontSize: 26.sp,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.blackLight,
+                ),
               ),
               8.hBox,
 
               // Subtitle
               Text(
                 AppStrings.permissionsSubtitle,
-                style: TextStyle(fontSize: 16.sp, color: AppColors.gray1, fontWeight: FontWeight.w400),
+                style: TextStyle(
+                  fontSize: 16.sp,
+                  color: AppColors.gray1,
+                  fontWeight: FontWeight.w400,
+                ),
               ),
               32.hBox,
 
@@ -88,7 +96,12 @@ class SetPermissionsPage extends ConsumerWidget {
               const Spacer(),
 
               // Get Started button
-              AppButton(onTap: () => _showAllSetPopup(context), title: AppStrings.getStarted),
+              Center(
+                child: AppButton(
+                  onTap: () => _showAllSetPopup(context),
+                  title: AppStrings.getStarted,
+                ),
+              ),
               16.hBox,
 
               // Skip for now
@@ -97,7 +110,11 @@ class SetPermissionsPage extends ConsumerWidget {
                   onTap: () => context.pop(),
                   child: Text(
                     AppStrings.skipForNow,
-                    style: TextStyle(fontSize: 13.sp, color: AppColors.secondary, fontWeight: FontWeight.w500),
+                    style: TextStyle(
+                      fontSize: 13.sp,
+                      color: AppColors.secondary,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ),
               ),
@@ -111,7 +128,12 @@ class SetPermissionsPage extends ConsumerWidget {
 }
 
 class _PermissionTile extends StatelessWidget {
-  const _PermissionTile({required this.title, required this.description, required this.value, required this.onChanged});
+  const _PermissionTile({
+    required this.title,
+    required this.description,
+    required this.value,
+    required this.onChanged,
+  });
 
   final String title;
   final String description;
@@ -135,7 +157,11 @@ class _PermissionTile extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold, color: AppColors.blackLight),
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.blackLight,
+                  ),
                 ),
                 6.hBox,
                 Text(

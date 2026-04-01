@@ -28,6 +28,9 @@ dependencies:
   image_picker: ^1.2.1
   flip_card_swiper:
   intl: ^0.19.0
+  file_picker:
+  emoji_picker_flutter:
+  lottie:
 
 
 dev_dependencies:
@@ -54,6 +57,7 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
+    - assets/json/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lottie/lottie.dart';
 import 'package:untitled1/core/constant/app_assets.dart';
 import 'package:untitled1/core/constant/app_strings.dart';
 import 'package:untitled1/core/extentions/extentions.dart';
@@ -25,22 +27,22 @@ final List<OnboardingModel> onboardingData = [
   OnboardingModel(
     title: AppStrings.onboardingTitle1,
     subtitle: AppStrings.onboardingDescription1,
-    image: AppAssets.onboarding_1,
+    image: AppAssets.onBoardingData,
   ),
   OnboardingModel(
     title: AppStrings.onboardingTitle2,
     subtitle: AppStrings.onboardingDescription2,
-    image: AppAssets.onboarding_2,
+    image: AppAssets.onboar2,
   ),
   OnboardingModel(
     title: AppStrings.onboardingTitle3,
     subtitle: AppStrings.onboardingDescription3,
-    image: AppAssets.onboarding_3,
+    image: AppAssets.onb3,
   ),
   OnboardingModel(
     title: AppStrings.onboardingTitle4,
     subtitle: AppStrings.onboardingDescription4,
-    image: AppAssets.onboarding_4,
+    image: AppAssets.onbo4,
   ),
 ];
 
@@ -70,28 +72,34 @@ class _OnboardingPageState extends State<OnboardingPage> {
       backgroundColor: Colors.white,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          Expanded(
-            flex: 2,
-            child: OnboardingImage(index: currentIndex, image: data.image),
-          ),
-          Expanded(
-            flex: 1,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                40.hBox,
-                OnboardingText(data: data),
-                const Spacer(),
-                Padding(
-                  padding: 30.px,
-                  child: AppButton(title: AppStrings.next, onTap: next),
-                ),
-                20.hBox,
-                const OnboardingFooter(),
-                20.hBox,
-              ],
-            ),
+          Spacer(),
+          OnboardingImage(index: currentIndex, image: data.image),
+          /*  currentIndex == 0
+              ? Lottie.asset(AppAssets.onBoardingData, height: 398.h)
+              : Expanded(
+                  flex: 2,
+                  child: OnboardingImage(
+                    index: currentIndex,
+                    image: data.image,
+                  ),
+                ),*/
+          Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              53.hBox,
+              OnboardingText(data: data),
+              33.hBox,
+              // const Spacer(),
+              Padding(
+                padding: 30.px,
+                child: AppButton(title: AppStrings.next, onTap: next),
+              ),
+              20.hBox,
+              const OnboardingFooter(),
+              20.hBox,
+            ],
           ),
         ],
       ),

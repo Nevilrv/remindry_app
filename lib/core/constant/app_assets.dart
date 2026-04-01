@@ -1,4 +1,7 @@
 class AppAssets {
+  ///json
+  static const String splashJson = "assets/json/Splashscreendata.json";
+
   static const String logo = "assets/icons/logo.svg";
   static const String bg = "assets/images/bg.svg";
   static const String bg1 = "assets/images/bg1.svg";
@@ -74,4 +77,24 @@ class AppAssets {
   static const String king = "assets/icons/king.svg";
   static const String close = "assets/icons/close.svg";
   static const String bulb = "assets/icons/bulb.svg";
+  static const String lampContainer = "assets/icons/lampContainer.png";
+  static const String lockContainer = "assets/icons/lockContainer.png";
+  static const String flash = "assets/icons/flash.svg";
+  static const String ads1 = "assets/icons/ads1.svg";
+  static const String aiExtraction = "assets/icons/aiextraction.svg";
+  static const String cloud = "assets/icons/cloud.svg";
+  static const String ocr = "assets/icons/ocr.svg";
+  static const String wp = "assets/icons/wp.svg";
+  static const String pushNotification = "assets/icons/pushnotification.svg";
+  static const String star = "assets/icons/star.svg";
+  static const String aiInsights = "assets/icons/aiInsights.svg";
+  static const String welcomePremium = "assets/images/welcomePremium.svg";
+
+  ///json
+  static const String splashAnimation = "assets/json/Splashscreendata.json";
+  static const String onBoardingData = "assets/json/Onboarding_data.json";
+  static const String aiChatData = "assets/json/AICHATdata.json";
+  static const String onboar2 = "assets/json/onboar2.json";
+  static const String onb3 = "assets/json/onb3.json";
+  static const String onbo4 = "assets/json/onbo4.json";
 }

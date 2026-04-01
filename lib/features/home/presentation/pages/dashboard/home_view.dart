@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:untitled1/core/constant/app_assets.dart';
+import 'package:untitled1/core/constant/app_strings.dart';
 import 'package:untitled1/core/constant/app_theme.dart';
 import 'package:untitled1/core/extentions/extentions.dart';
 import 'package:untitled1/features/home/presentation/providers/home_provider.dart';
@@ -38,7 +39,12 @@ class HomeView extends ConsumerWidget {
                         // ─── Hero title ───────────────────────────────
                         Text(
                           "Track Your Health,\nStay in Control",
-                          style: TextStyle(fontSize: 26.sp, fontWeight: FontWeight.w400, color: AppColors.blackLight, height: 1.3),
+                          style: TextStyle(
+                            fontSize: 26.sp,
+                            fontWeight: FontWeight.w400,
+                            color: AppColors.blackLight,
+                            height: 1.3,
+                          ),
                         ),
                         16.hBox,
 
@@ -57,6 +63,8 @@ class HomeView extends ConsumerWidget {
                         // ─── Today's Reminders ─────────────────────────
                         _TodaysReminders(),
                         24.hBox,
+
+                        30.hBox,
                       ],
                     ),
                   ),
@@ -83,11 +91,18 @@ class _Header extends StatelessWidget {
           child: Container(
             width: 44.sp,
             height: 44.sp,
-            decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.white),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.white,
+            ),
             child: Center(
               child: Text(
                 "JD",
-                style: TextStyle(color: AppColors.blackLight, fontSize: 16.sp, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  color: AppColors.blackLight,
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ),
@@ -98,7 +113,11 @@ class _Header extends StatelessWidget {
           children: [
             Text(
               "Hi, John Doe",
-              style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.bold, color: AppColors.blackLight),
+              style: TextStyle(
+                fontSize: 15.sp,
+                fontWeight: FontWeight.bold,
+                color: AppColors.blackLight,
+              ),
             ),
             Text(
               "Good Afternoon",
@@ -113,11 +132,17 @@ class _Header extends StatelessWidget {
           child: Container(
             width: 40.sp,
             height: 40.sp,
-            decoration: const BoxDecoration(color: AppColors.white, shape: BoxShape.circle),
+            decoration: const BoxDecoration(
+              color: AppColors.white,
+              shape: BoxShape.circle,
+            ),
             child: Center(
               child: SvgPicture.asset(
                 AppAssets.notificationIcon,
-                colorFilter: const ColorFilter.mode(AppColors.black, BlendMode.srcIn),
+                colorFilter: const ColorFilter.mode(
+                  AppColors.black,
+                  BlendMode.srcIn,
+                ),
                 width: 20.sp,
                 height: 20.sp,
               ),
@@ -163,7 +188,11 @@ class _HealthCarouselState extends ConsumerState<_HealthCarousel> {
             controller: _pageController,
             onPageChanged: (index) => provider.setCarouselPage(index),
             physics: const BouncingScrollPhysics(),
-            children: const [_HealthScoreCard(), _HealthScoreCard(), _HealthScoreCard()],
+            children: const [
+              _HealthScoreCard(),
+              _HealthScoreCard(),
+              _HealthScoreCard(),
+            ],
           ),
         ),
         12.hBox,
@@ -182,7 +211,10 @@ class _HealthScoreCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(16.r),
-      decoration: BoxDecoration(color: AppColors.white, borderRadius: BorderRadius.circular(16.r)),
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(16.r),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -192,31 +224,53 @@ class _HealthScoreCard extends StatelessWidget {
               Container(
                 width: 40.sp,
                 height: 40.sp,
-                decoration: const BoxDecoration(color: AppColors.blueColor, shape: BoxShape.circle),
+                decoration: const BoxDecoration(
+                  color: AppColors.blueColor,
+                  shape: BoxShape.circle,
+                ),
                 child: Center(
-                  child: SvgPicture.asset(AppAssets.mail, width: 18.sp, height: 18.sp),
+                  child: SvgPicture.asset(
+                    AppAssets.mail,
+                    width: 18.sp,
+                    height: 18.sp,
+                  ),
                 ),
               ),
               12.wBox,
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Health Score",
-                    style: TextStyle(fontSize: 12.sp, color: AppColors.secondary),
-                  ),
-                  10.hBox,
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
-                    decoration: BoxDecoration(color: AppColors.lightGray5, borderRadius: BorderRadius.circular(20.r)),
-                    child: Text(
-                      "2 big events this week",
-                      style: TextStyle(fontSize: 11.sp, color: Colors.black, fontWeight: FontWeight.w600),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Health Score",
+                      style: TextStyle(
+                        fontSize: 12.sp,
+                        color: AppColors.secondary,
+                      ),
                     ),
-                  ),
-                ],
+                    10.hBox,
+                    Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 10.w,
+                        vertical: 4.h,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.lightGray5,
+                        borderRadius: BorderRadius.circular(20.r),
+                      ),
+                      child: Text(
+                        "2 big events this week",
+                        style: TextStyle(
+                          fontSize: 11.sp,
+                          color: Colors.black,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              const Spacer(),
             ],
           ),
           10.hBox,
@@ -263,7 +317,7 @@ class _CarouselDots extends StatelessWidget {
                     end: Alignment.bottomCenter,
                   )
                 : const LinearGradient(
-                    colors: [Color(0xffE0E0E0), Color(0xffE0E0E0)],
+                    colors: [Colors.white, Colors.white],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -317,7 +371,11 @@ class _CategoryRow extends ConsumerWidget {
 }
 
 class _CategoryItem extends StatelessWidget {
-  const _CategoryItem({required this.asset, required this.label, required this.isSelected});
+  const _CategoryItem({
+    required this.asset,
+    required this.label,
+    required this.isSelected,
+  });
   final String asset;
   final String label;
   final bool isSelected;
@@ -340,20 +398,30 @@ class _CategoryItem extends StatelessWidget {
                 Container(
                   width: 42.sp,
                   height: 42.sp,
-                  decoration: BoxDecoration(color: AppColors.gray2, borderRadius: BorderRadius.circular(12.r)),
+                  decoration: BoxDecoration(
+                    color: AppColors.gray2,
+                    borderRadius: BorderRadius.circular(12.r),
+                  ),
                   child: Center(
                     child: SvgPicture.asset(
                       asset,
                       width: 18.sp,
                       height: 18.sp,
-                      colorFilter: const ColorFilter.mode(Color(0xff2C2C2C), BlendMode.srcIn),
+                      colorFilter: const ColorFilter.mode(
+                        Color(0xff2C2C2C),
+                        BlendMode.srcIn,
+                      ),
                     ),
                   ),
                 ),
                 8.hBox,
                 Text(
                   label,
-                  style: TextStyle(fontSize: 12.sp, color: AppColors.black, fontWeight: FontWeight.w500),
+                  style: TextStyle(
+                    fontSize: 12.sp,
+                    color: AppColors.black,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ],
             ),
@@ -374,7 +442,11 @@ class _QuickAccess extends StatelessWidget {
       children: [
         Text(
           "Quick Access",
-          style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold, color: AppColors.blackLight),
+          style: TextStyle(
+            fontSize: 16.sp,
+            fontWeight: FontWeight.bold,
+            color: AppColors.blackLight,
+          ),
         ),
         12.hBox,
         Row(
@@ -407,15 +479,26 @@ class _QuickAccess extends StatelessWidget {
                               borderRadius: BorderRadius.circular(12.r),
                             ),
                             child: Center(
-                              child: SvgPicture.asset(AppAssets.scanIcon, width: 18.sp, height: 18.sp),
+                              child: SvgPicture.asset(
+                                AppAssets.scanIcon,
+                                width: 18.sp,
+                                height: 18.sp,
+                              ),
                             ),
                           ),
                           Container(
                             height: 16.h,
                             width: 16.h,
-                            decoration: BoxDecoration(color: AppColors.lightGray13, shape: BoxShape.circle),
+                            decoration: BoxDecoration(
+                              color: AppColors.lightGray13,
+                              shape: BoxShape.circle,
+                            ),
                             child: Center(
-                              child: Icon(Icons.arrow_outward, size: 18.sp, color: AppColors.black),
+                              child: Icon(
+                                Icons.arrow_outward,
+                                size: 18.sp,
+                                color: AppColors.black,
+                              ),
                             ),
                           ),
                         ],
@@ -423,12 +506,19 @@ class _QuickAccess extends StatelessWidget {
                       10.hBox,
                       Text(
                         "Scan Document",
-                        style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: AppColors.blackLight),
+                        style: TextStyle(
+                          fontSize: 13.sp,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.blackLight,
+                        ),
                       ),
                       4.hBox,
                       Text(
                         "Digitize your paperwork in seconds.",
-                        style: TextStyle(fontSize: 11.sp, color: AppColors.secondary),
+                        style: TextStyle(
+                          fontSize: 11.sp,
+                          color: AppColors.secondary,
+                        ),
                       ),
                     ],
                   ),
@@ -464,15 +554,26 @@ class _QuickAccess extends StatelessWidget {
                               borderRadius: BorderRadius.circular(12.r),
                             ),
                             child: Center(
-                              child: SvgPicture.asset(AppAssets.reminderIcon, width: 18.sp, height: 18.sp),
+                              child: SvgPicture.asset(
+                                AppAssets.reminderIcon,
+                                width: 18.sp,
+                                height: 18.sp,
+                              ),
                             ),
                           ),
                           Container(
                             height: 16.h,
                             width: 16.h,
-                            decoration: BoxDecoration(color: AppColors.lightGray13, shape: BoxShape.circle),
+                            decoration: BoxDecoration(
+                              color: AppColors.lightGray13,
+                              shape: BoxShape.circle,
+                            ),
                             child: Center(
-                              child: Icon(Icons.arrow_outward, size: 18.sp, color: AppColors.black),
+                              child: Icon(
+                                Icons.arrow_outward,
+                                size: 18.sp,
+                                color: AppColors.black,
+                              ),
                             ),
                           ),
                         ],
@@ -480,12 +581,19 @@ class _QuickAccess extends StatelessWidget {
                       10.hBox,
                       Text(
                         "Add Reminder",
-                        style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: AppColors.black),
+                        style: TextStyle(
+                          fontSize: 13.sp,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.black,
+                        ),
                       ),
                       4.hBox,
                       Text(
                         "Never miss an important deadline.",
-                        style: TextStyle(fontSize: 11.sp, color: AppColors.secondary),
+                        style: TextStyle(
+                          fontSize: 11.sp,
+                          color: AppColors.secondary,
+                        ),
                       ),
                     ],
                   ),
@@ -511,12 +619,23 @@ class _TodaysReminders extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              "Today's Reminders",
-              style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w500, color: AppColors.black),
+              AppStrings.todaysReminders,
+              style: TextStyle(
+                fontSize: 16.sp,
+                fontWeight: FontWeight.w500,
+                color: AppColors.black,
+              ),
             ),
-            Text(
-              "See All",
-              style: TextStyle(fontSize: 14.sp, color: AppColors.purple, fontWeight: FontWeight.w500),
+            GestureDetector(
+              onTap: () => context.pushNamed(AppRoutes.remindersSeeAll),
+              child: Text(
+                AppStrings.seeAll,
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  color: AppColors.purple,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
             ),
           ],
         ),
@@ -543,9 +662,9 @@ class _TodaysReminders extends StatelessWidget {
                 child: _ReminderTile(
                   assetPath: AppAssets.tablet,
                   iconBgColor: AppColors.lightOrange,
-                  title: "Take Antibiotics",
-                  subtitle: "8:00 AM • After Breakfast",
-                  badge: "NOW",
+                  title: AppStrings.takeAntibiotics,
+                  subtitle: AppStrings.afterBreakfast,
+                  badge: AppStrings.now,
                   badgeBgColor: AppColors.orange,
                   badgeTextColor: AppColors.white,
                 ),
@@ -568,8 +687,8 @@ class _TodaysReminders extends StatelessWidget {
                 child: _ReminderTile(
                   assetPath: AppAssets.medical,
                   iconBgColor: AppColors.lightBlueBox,
-                  title: "Dr.Smith Chekup",
-                  subtitle: "2:30 AM • Cardiology",
+                  title: AppStrings.drSmithCheckup,
+                  subtitle: AppStrings.timeCheckup,
                   badge: "TODAY",
                   badgeBgColor: AppColors.badgeGray,
                   badgeTextColor: AppColors.badgeGrayText,
@@ -611,7 +730,10 @@ class _ReminderTile extends StatelessWidget {
           Container(
             width: 48.sp,
             height: 48.sp,
-            decoration: BoxDecoration(color: iconBgColor, borderRadius: BorderRadius.circular(14.r)),
+            decoration: BoxDecoration(
+              color: iconBgColor,
+              borderRadius: BorderRadius.circular(14.r),
+            ),
             child: Center(
               child: SvgPicture.asset(assetPath, width: 20.sp, height: 20.sp),
             ),
@@ -623,7 +745,11 @@ class _ReminderTile extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w500, color: AppColors.blackLight),
+                  style: TextStyle(
+                    fontSize: 15.sp,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.blackLight,
+                  ),
                 ),
                 4.hBox,
                 Text(
@@ -635,10 +761,17 @@ class _ReminderTile extends StatelessWidget {
           ),
           Container(
             padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
-            decoration: BoxDecoration(color: badgeBgColor, borderRadius: BorderRadius.circular(20.r)),
+            decoration: BoxDecoration(
+              color: badgeBgColor,
+              borderRadius: BorderRadius.circular(20.r),
+            ),
             child: Text(
               badge,
-              style: TextStyle(color: badgeTextColor, fontSize: 10.sp, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                color: badgeTextColor,
+                fontSize: 10.sp,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ],

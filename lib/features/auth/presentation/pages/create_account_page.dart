@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lottie/lottie.dart';
 import 'package:untitled1/core/constant/app_assets.dart';
 import 'package:untitled1/core/constant/app_strings.dart';
 import 'package:untitled1/core/constant/app_theme.dart';
@@ -25,7 +26,15 @@ class CreateAccountPage extends ConsumerWidget {
         fit: StackFit.expand,
         children: [
           /// Background bg1
-          SvgPicture.asset(AppAssets.bg1, fit: BoxFit.cover),
+          Transform.rotate(
+            angle: 3.14159265359,
+            child: Lottie.asset(
+              AppAssets.splashJson,
+              height: double.infinity,
+              width: double.infinity,
+              fit: BoxFit.cover,
+            ),
+          ),
 
           Padding(
             padding: 20.px,

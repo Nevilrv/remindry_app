@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:country_picker/country_picker.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lottie/lottie.dart';
 
 import 'package:untitled1/features/auth/presentation/providers/login_provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -12,6 +13,7 @@ import 'package:untitled1/core/utils/widgets/app_logo.dart';
 import 'package:untitled1/core/utils/widgets/gradient_bg.dart';
 import 'package:untitled1/routes/app_routes.dart';
 
+import '../../../../core/constant/app_assets.dart';
 import '../../../../core/constant/app_theme.dart';
 
 class LoginPage extends ConsumerWidget {
@@ -26,7 +28,15 @@ class LoginPage extends ConsumerWidget {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          Transform.rotate(angle: 3.14159265359, child: GradientBg()),
+          Transform.rotate(
+            angle: 3.14159265359,
+            child: Lottie.asset(
+              AppAssets.splashJson,
+              height: double.infinity,
+              width: double.infinity,
+              fit: BoxFit.cover,
+            ),
+          ),
           Padding(
             padding: 30.px,
             child: Column(
@@ -190,7 +200,8 @@ class LoginPage extends ConsumerWidget {
                             ),
                           ),
                           GestureDetector(
-                            onTap: () => context.pushNamed(AppRoutes.createAccount),
+                            onTap: () =>
+                                context.pushNamed(AppRoutes.createAccount),
                             child: Text(
                               AppStrings.createAccount,
                               style: TextStyle(

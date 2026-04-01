@@ -22,7 +22,10 @@ class EditPhoneNumberScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: AppColors.lightGray15,
-      appBar: CommonAppBarRemindry(title: "Edit Phone Number", onBack: () => context.pop()),
+      appBar: CommonAppBarRemindry(
+        title: "Edit Phone Number",
+        onBack: () => context.pop(),
+      ),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20.w),
         child: Column(
@@ -32,7 +35,11 @@ class EditPhoneNumberScreen extends ConsumerWidget {
             10.hBox,
             Text(
               "Update your contact number",
-              style: TextStyle(fontSize: 13.sp, color: AppColors.gray1, fontWeight: FontWeight.w400),
+              style: TextStyle(
+                fontSize: 13.sp,
+                color: AppColors.gray1,
+                fontWeight: FontWeight.w400,
+              ),
             ),
             22.hBox,
 
@@ -50,7 +57,11 @@ class EditPhoneNumberScreen extends ConsumerWidget {
                     // Navigate to verify code or logic
                   },
                   title: "Verify First",
-                  icon: Icon(Icons.done_all_rounded, color: AppColors.white, size: 20.sp),
+                  icon: Icon(
+                    Icons.done_all_rounded,
+                    color: AppColors.white,
+                    size: 20.sp,
+                  ),
                 ),
               ),
             ),
@@ -72,10 +83,20 @@ class EditPhoneNumberScreen extends ConsumerWidget {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
         ),
-        boxShadow: [BoxShadow(color: AppColors.redGradient.withOpacity(0.3), blurRadius: 30, offset: const Offset(0, 10))],
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.redGradient.withOpacity(0.3),
+            blurRadius: 30,
+            offset: const Offset(0, 10),
+          ),
+        ],
       ),
       alignment: Alignment.center,
-      child: SvgPicture.asset(AppAssets.call_1, width: 32.r, colorFilter: const ColorFilter.mode(AppColors.white, BlendMode.srcIn)),
+      child: SvgPicture.asset(
+        AppAssets.call_1,
+        width: 32.r,
+        colorFilter: const ColorFilter.mode(AppColors.white, BlendMode.srcIn),
+      ),
     );
   }
 
@@ -84,7 +105,12 @@ class EditPhoneNumberScreen extends ConsumerWidget {
       alignment: Alignment.centerLeft,
       child: Text(
         label,
-        style: TextStyle(fontSize: 11.sp, fontWeight: FontWeight.w600, color: AppColors.gray1, letterSpacing: 0.5),
+        style: TextStyle(
+          fontSize: 11.sp,
+          fontWeight: FontWeight.w600,
+          color: AppColors.gray1,
+          letterSpacing: 0.5,
+        ),
       ),
     );
   }
@@ -112,17 +138,31 @@ class EditPhoneNumberScreen extends ConsumerWidget {
                   );
                 },
                 child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 21.h),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 16.w,
+                    vertical: 21.h,
+                  ),
                   child: Row(
                     children: [
-                      Text(country.flagEmoji, style: TextStyle(fontSize: 18.sp)),
+                      Text(
+                        country.flagEmoji,
+                        style: TextStyle(fontSize: 18.sp),
+                      ),
                       SizedBox(width: 4.w),
                       Text(
                         "+${country.phoneCode}",
-                        style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: AppColors.black1),
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.black1,
+                        ),
                       ),
                       // SizedBox(width: 4.w),
-                      Icon(Icons.keyboard_arrow_down_rounded, size: 18.sp, color: AppColors.gray1),
+                      Icon(
+                        Icons.keyboard_arrow_down_rounded,
+                        size: 18.sp,
+                        color: AppColors.gray1,
+                      ),
                     ],
                   ),
                 ),
@@ -131,11 +171,19 @@ class EditPhoneNumberScreen extends ConsumerWidget {
               Expanded(
                 child: TextField(
                   controller: provider.phoneController,
-                  style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600, color: AppColors.black2),
+                  style: TextStyle(
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.black2,
+                  ),
                   keyboardType: TextInputType.phone,
                   decoration: InputDecoration(
                     hintText: "Enter number",
-                    hintStyle: TextStyle(color: AppColors.gray1.withOpacity(0.4), fontSize: 16.sp, fontWeight: FontWeight.w400),
+                    hintStyle: TextStyle(
+                      color: AppColors.gray1.withOpacity(0.4),
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w400,
+                    ),
                     border: InputBorder.none,
                     isDense: true,
                     contentPadding: EdgeInsets.symmetric(horizontal: 16.w),
@@ -148,7 +196,10 @@ class EditPhoneNumberScreen extends ConsumerWidget {
                   child: Container(
                     margin: EdgeInsets.only(right: 16.w),
                     padding: EdgeInsets.all(6.r),
-                    decoration: BoxDecoration(color: AppColors.lightGray10, shape: BoxShape.circle),
+                    decoration: BoxDecoration(
+                      color: AppColors.lightGray10,
+                      shape: BoxShape.circle,
+                    ),
                     child: SvgPicture.asset(AppAssets.close),
                   ),
                 ),
@@ -165,14 +216,26 @@ class EditPhoneNumberScreen extends ConsumerWidget {
               children: [
                 Text(
                   "+${country.phoneCode} (${provider.phoneController.text.substring(0, provider.phoneController.text.length > 3 ? 3 : provider.phoneController.text.length)}) 000-0000",
-                  style: TextStyle(fontSize: 12.sp, color: AppColors.iconGray, fontWeight: FontWeight.w500),
+                  style: TextStyle(
+                    fontSize: 12.sp,
+                    color: AppColors.iconGray,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
                 Row(
                   children: [
-                    Icon(Icons.check_rounded, color: AppColors.green, size: 14.sp),
+                    Icon(
+                      Icons.check_rounded,
+                      color: AppColors.green,
+                      size: 14.sp,
+                    ),
                     Text(
                       "Valid",
-                      style: TextStyle(fontSize: 11.5.sp, color: AppColors.green, fontWeight: FontWeight.w500),
+                      style: TextStyle(
+                        fontSize: 11.5.sp,
+                        color: AppColors.green,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ],
                 ),
@@ -195,17 +258,11 @@ class EditPhoneNumberScreen extends ConsumerWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            padding: EdgeInsets.all(10.r),
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [AppColors.pinkGradient, AppColors.redGradient],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-              ),
-              borderRadius: BorderRadius.circular(10.r),
-            ),
-            child: SvgPicture.asset(AppAssets.lock, width: 18.r, colorFilter: const ColorFilter.mode(AppColors.white, BlendMode.srcIn)),
+          Image.asset(
+            AppAssets.lockContainer,
+            width: 28.h,
+            height: 28.h,
+            fit: BoxFit.fill,
           ),
           12.wBox,
           Expanded(
@@ -214,12 +271,20 @@ class EditPhoneNumberScreen extends ConsumerWidget {
               children: [
                 Text(
                   "Verification required",
-                  style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600, color: AppColors.black1),
+                  style: TextStyle(
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.black1,
+                  ),
                 ),
                 // 4.hBox,
                 Text(
                   "We'll send a 6-digit code to verify this number.",
-                  style: TextStyle(fontSize: 11.sp, color: AppColors.gray1, fontWeight: FontWeight.w400),
+                  style: TextStyle(
+                    fontSize: 11.sp,
+                    color: AppColors.gray1,
+                    fontWeight: FontWeight.w400,
+                  ),
                 ),
               ],
             ),
@@ -231,7 +296,13 @@ class EditPhoneNumberScreen extends ConsumerWidget {
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 8.h),
               decoration: BoxDecoration(
-                boxShadow: [BoxShadow(color: AppColors.redGradient.withOpacity(0.3), blurRadius: 30, offset: const Offset(0, 10))],
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.redGradient.withOpacity(0.3),
+                    blurRadius: 30,
+                    offset: const Offset(0, 10),
+                  ),
+                ],
 
                 gradient: const LinearGradient(
                   colors: [AppColors.pinkGradient, AppColors.redGradient],
@@ -242,7 +313,11 @@ class EditPhoneNumberScreen extends ConsumerWidget {
               ),
               child: Text(
                 "Send",
-                style: TextStyle(color: AppColors.white, fontSize: 12.sp, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  color: AppColors.white,
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ),

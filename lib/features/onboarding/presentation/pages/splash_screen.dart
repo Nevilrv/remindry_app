@@ -3,10 +3,11 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lottie/lottie.dart';
+import 'package:untitled1/core/constant/app_assets.dart';
 import 'package:untitled1/core/constant/app_strings.dart';
 import 'package:untitled1/core/extentions/extentions.dart';
 import 'package:untitled1/core/utils/widgets/app_logo.dart';
-import 'package:untitled1/core/utils/widgets/gradient_bg.dart';
 import 'package:untitled1/routes/app_routes.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -22,7 +23,7 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     Timer(const Duration(seconds: 4), () {
       if (mounted) {
-        context.go(AppRoutes.home);
+        context.go(AppRoutes.onboarding);
       }
     });
   }
@@ -35,7 +36,12 @@ class _SplashScreenState extends State<SplashScreen> {
         fit: StackFit.expand,
         clipBehavior: Clip.none,
         children: [
-          const GradientBg(),
+          Lottie.asset(
+            AppAssets.splashJson,
+            height: double.infinity,
+            width: double.infinity,
+            fit: BoxFit.cover,
+          ),
           Align(
             alignment: Alignment.center,
             child: Column(

@@ -447,7 +447,7 @@ class _CategoryItem extends StatelessWidget {
       duration: const Duration(milliseconds: 200),
       padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 10.w),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: isSelected ? AppColors.primaryLight3 : Colors.white,
         borderRadius: BorderRadius.circular(16.r),
 
         boxShadow: [
@@ -486,9 +486,7 @@ class _CategoryItem extends StatelessWidget {
             label,
             style: TextStyle(
               fontSize: 11.sp,
-              color: isSelected
-                  ? AppColors.primary
-                  : AppColors.blackLight,
+              color: isSelected ? AppColors.primary : AppColors.blackLight,
               fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
             ),
           ),

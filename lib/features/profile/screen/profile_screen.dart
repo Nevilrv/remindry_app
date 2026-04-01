@@ -53,7 +53,7 @@ class ProfileScreen extends StatelessWidget {
                   SizedBox(height: 17.h),
 
                   // Upgrade to Premium Card
-                  _buildPremiumCard(),
+                  _buildPremiumCard(context),
                   SizedBox(height: 17.h),
 
                   // Account Details Card
@@ -98,9 +98,12 @@ class ProfileScreen extends StatelessWidget {
         ),
         Spacer(),
 
-        SizedBox(
-          width: 55.h,
-          child: Align(alignment: Alignment.centerRight, child: SvgPicture.asset(AppAssets.setting)),
+        GestureDetector(
+          onTap: () => context.push(AppRoutes.settings),
+          child: SizedBox(
+            width: 55.h,
+            child: Align(alignment: Alignment.centerRight, child: SvgPicture.asset(AppAssets.setting)),
+          ),
         ),
       ],
     );
@@ -206,113 +209,111 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildPremiumCard() {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 15.5.h, horizontal: 17.5.w),
-      decoration: BoxDecoration(
-        border: Border.all(color: AppColors.pinkGradient.withValues(alpha: 0.35), width: 3),
-
-        gradient: const LinearGradient(
-          colors: [Color(0xFF1B0D31), Color(0xFF2D1B4E), Color(0xFF1B0D31)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(24.r),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.3), blurRadius: 20, offset: const Offset(0, 10))],
-      ),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Container(
-                padding: EdgeInsets.all(11.w),
-                // width: 54.r,
-                // height: 54.r,
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [AppColors.pinkGradient, AppColors.redGradient],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  borderRadius: BorderRadius.circular(12.r),
-                  boxShadow: [BoxShadow(color: AppColors.redGradient.withValues(alpha: 0.4), blurRadius: 20, offset: const Offset(0, 10))],
-                ),
-                child: Center(
-                  child: SvgPicture.asset(
-                    AppAssets.king,
-                    width: 18.r,
-                    // colorFilter: const ColorFilter.mode(AppColors.white, BlendMode.srcIn),
-                  ),
-                ),
-              ),
-              SizedBox(width: 16.w),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Upgrade to\nPremium",
-                      style: TextStyle(color: AppColors.white, fontSize: 14.sp, fontWeight: FontWeight.w800),
-                    ),
-                    // SizedBox(height: 6.h),
-                    RichText(
-                      text: TextSpan(
-                        children: [
-                          TextSpan(
-                            text: "Unlock every feature\n— from ",
-                            style: TextStyle(color: AppColors.white.withValues(alpha: 0.45), fontSize: 11.sp, fontWeight: FontWeight.w400),
-                          ),
-                          TextSpan(
-                            text: "\$4.99/mo",
-                            style: TextStyle(
-                              color: AppColors.pinkGradient.withValues(alpha: 0.9),
-                              fontSize: 11.sp,
-                              fontWeight: FontWeight.w800,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 11.h),
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(colors: [AppColors.pinkGradient, AppColors.redGradient]),
-                  borderRadius: BorderRadius.circular(12.r),
-                  boxShadow: [BoxShadow(color: AppColors.redGradient.withValues(alpha: 0.4), blurRadius: 20, offset: const Offset(0, 10))],
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    SvgPicture.asset(AppAssets.goPremium),
-                    SizedBox(width: 5.w),
-                    Text(
-                      "Go Premium",
-                      style: TextStyle(color: AppColors.white, fontSize: 13.sp, fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                ),
-              ),
-            ],
+  Widget _buildPremiumCard(BuildContext context) {
+    return GestureDetector(
+      onTap: () => context.push(AppRoutes.goPremium),
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 15.5.h, horizontal: 17.5.w),
+        decoration: BoxDecoration(
+          border: Border.all(color: AppColors.pinkGradient.withValues(alpha: 0.35), width: 3),
+          gradient: const LinearGradient(
+            colors: [Color(0xFF1B0D31), Color(0xFF2D1B4E), Color(0xFF1B0D31)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
-          SizedBox(height: 12.h),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
+          borderRadius: BorderRadius.circular(24.r),
+          boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.3), blurRadius: 20, offset: const Offset(0, 10))],
+        ),
+        child: Column(
+          children: [
+            Row(
               children: [
-                _buildFeatureChip(AppAssets.king, "Unlimited"),
-                SizedBox(width: 7.w),
-                _buildFeatureChip(AppAssets.ads, "No Ads"),
-                SizedBox(width: 7.w),
-                _buildFeatureChip(AppAssets.chat, "WhatsApp"),
-                SizedBox(width: 7.w),
-                _buildFeatureChip(AppAssets.backup, "Backup"),
+                Container(
+                  padding: EdgeInsets.all(11.w),
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [AppColors.pinkGradient, AppColors.redGradient],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(12.r),
+                    boxShadow: [BoxShadow(color: AppColors.redGradient.withValues(alpha: 0.4), blurRadius: 20, offset: const Offset(0, 10))],
+                  ),
+                  child: Center(
+                    child: SvgPicture.asset(
+                      AppAssets.king,
+                      width: 18.r,
+                    ),
+                  ),
+                ),
+                SizedBox(width: 16.w),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Upgrade to\nPremium",
+                        style: TextStyle(color: AppColors.white, fontSize: 14.sp, fontWeight: FontWeight.w800),
+                      ),
+                      RichText(
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text: "Unlock every feature\n— from ",
+                              style: TextStyle(color: AppColors.white.withValues(alpha: 0.45), fontSize: 11.sp, fontWeight: FontWeight.w400),
+                            ),
+                            TextSpan(
+                              text: "\$4.99/mo",
+                              style: TextStyle(
+                                color: AppColors.pinkGradient.withValues(alpha: 0.9),
+                                fontSize: 11.sp,
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 11.h),
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(colors: [AppColors.pinkGradient, AppColors.redGradient]),
+                    borderRadius: BorderRadius.circular(12.r),
+                    boxShadow: [BoxShadow(color: AppColors.redGradient.withValues(alpha: 0.4), blurRadius: 20, offset: const Offset(0, 10))],
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SvgPicture.asset(AppAssets.goPremium),
+                      SizedBox(width: 5.w),
+                      Text(
+                        "Go Premium",
+                        style: TextStyle(color: AppColors.white, fontSize: 13.sp, fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
-          ),
-        ],
+            SizedBox(height: 12.h),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  _buildFeatureChip(AppAssets.king, "Unlimited"),
+                  SizedBox(width: 7.w),
+                  _buildFeatureChip(AppAssets.ads, "No Ads"),
+                  SizedBox(width: 7.w),
+                  _buildFeatureChip(AppAssets.chat, "WhatsApp"),
+                  SizedBox(width: 7.w),
+                  _buildFeatureChip(AppAssets.backup, "Backup"),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
