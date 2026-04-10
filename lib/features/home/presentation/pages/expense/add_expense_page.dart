@@ -1,29 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-
 import 'package:untitled1/core/constant/app_assets.dart';
 import 'package:untitled1/core/constant/app_strings.dart';
 import 'package:untitled1/core/constant/app_theme.dart';
 import 'package:untitled1/core/extentions/extentions.dart';
 import 'package:untitled1/core/utils/widgets/app_button.dart';
 import 'package:untitled1/core/utils/widgets/common_app_bar_remindry.dart';
+import 'package:untitled1/features/home/presentation/providers/expense_provider.dart';
+import 'package:untitled1/features/home/presentation/providers/home_provider.dart';
+import 'package:untitled1/routes/app_routes.dart';
 
-class AddExpensePage extends StatefulWidget {
+class AddExpensePage extends ConsumerStatefulWidget {
   const AddExpensePage({super.key});
 
   @override
-  State<AddExpensePage> createState() => _AddExpensePageState();
+  ConsumerState<AddExpensePage> createState() => _AddExpensePageState();
 }
 
-class _AddExpensePageState extends State<AddExpensePage> {
+class _AddExpensePageState extends ConsumerState<AddExpensePage> {
   final TextEditingController _amountController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
-  int _selectedCategory = 0;
-  int _selectedWhoPaid = 0; // 0=I paid, 1=They paid, 2=Split equally
-  DateTime _selectedDate = DateTime.now();
 
   final List<Map<String, dynamic>> _categories = [
     {'asset': AppAssets.food, 'label': AppStrings.food},
@@ -37,19 +37,25 @@ class _AddExpensePageState extends State<AddExpensePage> {
   ];
 
   Future<void> _selectDate(BuildContext context) async {
+    FocusManager.instance.primaryFocus?.unfocus();
+
+    final currentDate = ref.read(addExpenseDateProvider);
+
     final DateTime? pickedDate = await showDatePicker(
       context: context,
-      initialDate: _selectedDate,
+      initialDate: currentDate ?? DateTime.now(),
       firstDate: DateTime(2000),
       lastDate: DateTime(2101),
       builder: (context, child) {
         return Theme(
-          data: Theme.of(context).copyWith(
+          data: ThemeData.light().copyWith(
             colorScheme: const ColorScheme.light(
               primary: AppColors.primary,
-              onPrimary: Colors.white,
-              onSurface: AppColors.black,
+              onPrimary: AppColors.white,
+              surface: AppColors.white,
+              onSurface: AppColors.blackLight,
             ),
+            dialogTheme: const DialogThemeData(backgroundColor: AppColors.white),
           ),
           child: child!,
         );
@@ -60,15 +66,28 @@ class _AddExpensePageState extends State<AddExpensePage> {
       if (!context.mounted) return;
       final TimeOfDay? pickedTime = await showTimePicker(
         context: context,
-        initialTime: TimeOfDay.fromDateTime(_selectedDate),
+        initialTime: TimeOfDay.fromDateTime(currentDate ?? DateTime.now()),
         builder: (context, child) {
           return Theme(
-            data: Theme.of(context).copyWith(
+            data: ThemeData.light().copyWith(
               colorScheme: const ColorScheme.light(
                 primary: AppColors.primary,
-                onPrimary: Colors.white,
-                onSurface: AppColors.black,
+                onPrimary: AppColors.white,
+                secondary: AppColors.primary,
+                onSecondary: AppColors.white,
+                surface: AppColors.white,
+                onSurface: AppColors.blackLight,
+                tertiary: AppColors.primary,
               ),
+              timePickerTheme: TimePickerThemeData(
+                backgroundColor: AppColors.white,
+                dayPeriodColor: WidgetStateColor.resolveWith((states) => states.contains(WidgetState.selected) ? AppColors.primary.withOpacity(0.2) : Colors.transparent),
+                dayPeriodTextColor: WidgetStateColor.resolveWith((states) => states.contains(WidgetState.selected) ? AppColors.primary : AppColors.blackLight),
+                dayPeriodBorderSide: const BorderSide(color: AppColors.lightGray),
+                hourMinuteColor: WidgetStateColor.resolveWith((states) => states.contains(WidgetState.selected) ? AppColors.primary.withOpacity(0.2) : AppColors.lightGray6),
+                hourMinuteTextColor: WidgetStateColor.resolveWith((states) => states.contains(WidgetState.selected) ? AppColors.primary : AppColors.blackLight),
+              ),
+              dialogTheme: const DialogThemeData(backgroundColor: AppColors.white),
             ),
             child: child!,
           );
@@ -76,29 +95,24 @@ class _AddExpensePageState extends State<AddExpensePage> {
       );
 
       if (pickedTime != null) {
-        setState(() {
-          _selectedDate = DateTime(
-            pickedDate.year,
-            pickedDate.month,
-            pickedDate.day,
-            pickedTime.hour,
-            pickedTime.minute,
-          );
-        });
+        ref.read(addExpenseDateProvider.notifier).state =
+            DateTime(pickedDate.year, pickedDate.month, pickedDate.day, pickedTime.hour, pickedTime.minute);
       }
     }
+    FocusManager.instance.primaryFocus?.unfocus();
   }
 
   @override
   Widget build(BuildContext context) {
+    final selectedDate = ref.watch(addExpenseDateProvider);
+    final selectedCategory = ref.watch(addExpenseCategoryProvider);
+    final selectedWhoPaid = ref.watch(addExpenseWhoPaidProvider);
+
     return Scaffold(
       backgroundColor: AppColors.lightGray6,
       body: Column(
         children: [
-          CommonAppBarRemindry(
-            title: AppStrings.addExpense,
-            subtitle: AppStrings.joinRemindry,
-          ),
+          CommonAppBarRemindry(title: AppStrings.addExpense, subtitle: AppStrings.joinRemindry),
           Expanded(
             child: SafeArea(
               top: false,
@@ -110,54 +124,35 @@ class _AddExpensePageState extends State<AddExpensePage> {
                   children: [
                     _SectionLabel(label: AppStrings.amountLabel),
                     8.hBox,
-                    _InputField(
-                      controller: _amountController,
-                      hint: AppStrings.amountHint,
-                      keyboardType: TextInputType.number,
-                    ),
+                    _InputField(controller: _amountController, hint: AppStrings.amountHint, keyboardType: TextInputType.number),
                     17.hBox,
                     _SectionLabel(label: AppStrings.description),
                     8.hBox,
-                    _InputField(
-                      controller: _descriptionController,
-                      hint: AppStrings.descriptionHint,
-                    ),
+                    _InputField(controller: _descriptionController, hint: AppStrings.descriptionHint),
                     17.hBox,
                     _SectionLabel(label: AppStrings.dateTime),
                     8.hBox,
                     GestureDetector(
                       onTap: () => _selectDate(context),
                       child: Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 16.w,
-                          vertical: 14.h,
-                        ),
+                        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
                         decoration: BoxDecoration(
                           color: AppColors.white,
                           borderRadius: BorderRadius.circular(12.r),
-                          border: Border.all(
-                            color: AppColors.lightGray,
-                            width: 1,
-                          ),
+                          border: Border.all(color: AppColors.lightGray, width: 1),
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              DateFormat(
-                                'dd/MM/yyyy • hh:mm a',
-                              ).format(_selectedDate),
+                              selectedDate == null ? "Pick expense date & time" : DateFormat('dd/MM/yyyy • hh:mm a').format(selectedDate),
                               style: TextStyle(
                                 fontSize: 14.sp,
-                                color: AppColors.blackLight,
+                                color: selectedDate == null ? AppColors.iconGray : AppColors.blackLight,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
-                            SvgPicture.asset(
-                              AppAssets.calender,
-                              width: 20.sp,
-                              height: 20.sp,
-                            ),
+                            SvgPicture.asset(AppAssets.calender, width: 20.sp, height: 20.sp),
                           ],
                         ),
                       ),
@@ -178,15 +173,10 @@ class _AddExpensePageState extends State<AddExpensePage> {
                       itemCount: _categories.length,
                       itemBuilder: (context, index) {
                         final cat = _categories[index];
-                        final isSelected = _selectedCategory == index;
+                        final isSelected = selectedCategory == index;
                         return GestureDetector(
-                          onTap: () =>
-                              setState(() => _selectedCategory = index),
-                          child: _CategoryItem(
-                            asset: cat['asset'],
-                            label: cat['label'],
-                            isSelected: isSelected,
-                          ),
+                          onTap: () => ref.read(addExpenseCategoryProvider.notifier).state = index,
+                          child: _CategoryItem(asset: cat['asset'], label: cat['label'], isSelected: isSelected),
                         );
                       },
                     ),
@@ -196,57 +186,61 @@ class _AddExpensePageState extends State<AddExpensePage> {
                     _WhoPaidItem(
                       title: AppStrings.iPaid,
                       subtitle: AppStrings.someoneOwesMe,
-                      isSelected: _selectedWhoPaid == 0,
+                      isSelected: selectedWhoPaid == 0,
                       icon: Icons.south_west,
                       iconColor: AppColors.primary,
-                      onTap: () => setState(() => _selectedWhoPaid = 0),
+                      onTap: () => ref.read(addExpenseWhoPaidProvider.notifier).state = 0,
                     ),
                     8.hBox,
                     _WhoPaidItem(
                       title: AppStrings.theyPaid,
                       subtitle: AppStrings.iOweThem,
-                      isSelected: _selectedWhoPaid == 1,
+                      isSelected: selectedWhoPaid == 1,
                       icon: Icons.north_east,
                       iconColor: Colors.black,
-                      onTap: () => setState(() => _selectedWhoPaid = 1),
+                      onTap: () => ref.read(addExpenseWhoPaidProvider.notifier).state = 1,
                     ),
                     8.hBox,
                     _WhoPaidItem(
                       title: AppStrings.splitEqually,
                       subtitle: AppStrings.everyonePaysShare,
-                      isSelected: _selectedWhoPaid == 2,
+                      isSelected: selectedWhoPaid == 2,
                       icon: Icons.drag_handle,
                       iconColor: Colors.black,
-                      onTap: () => setState(() => _selectedWhoPaid = 2),
+                      onTap: () => ref.read(addExpenseWhoPaidProvider.notifier).state = 2,
                     ),
                     24.hBox,
                     _SectionLabel(label: AppStrings.splitWith),
                     12.hBox,
                     Row(
                       children: [
-                        _Avatar(label: "JD", color: AppColors.primary),
-                        8.wBox,
-                        _Avatar(label: "RK", color: AppColors.primary),
-                        8.wBox,
-                        _Avatar(label: "CD", color: AppColors.primary),
-                        16.wBox,
+                        SizedBox(
+                          width: 100.w,
+                          child: Stack(
+                            children: [
+                              _Avatar(label: "JD", color: AppColors.primary),
+                              Positioned(
+                                left: 25.w,
+                                child: _Avatar(label: "RK", color: AppColors.primary),
+                              ),
+                              Positioned(
+                                left: 47.w,
+                                child: _Avatar(label: "CD", color: AppColors.primary),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const Spacer(),
                         Container(
                           width: 44.sp,
                           height: 44.sp,
                           decoration: BoxDecoration(
                             color: AppColors.white,
                             shape: BoxShape.circle,
-                            border: Border.all(
-                              color: AppColors.lightGray1,
-                              style: BorderStyle.solid,
-                            ),
+                            border: Border.all(color: AppColors.lightGray1, style: BorderStyle.solid),
                           ),
                           child: Center(
-                            child: Icon(
-                              Icons.add,
-                              size: 20.sp,
-                              color: AppColors.black,
-                            ),
+                            child: Icon(Icons.add, size: 20.sp, color: AppColors.black),
                           ),
                         ),
                       ],
@@ -254,7 +248,23 @@ class _AddExpensePageState extends State<AddExpensePage> {
                     40.hBox,
                     Center(
                       child: AppButton(
-                        onTap: () => context.pop(),
+                        onTap: () {
+                          if (_amountController.text.trim().isEmpty || _descriptionController.text.trim().isEmpty || selectedDate == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("All fields are required")));
+                            return;
+                          }
+
+                          final newExpense = Expense(
+                            amount: _amountController.text.trim(),
+                            description: _descriptionController.text.trim(),
+                            dateTime: selectedDate,
+                            categoryIndex: selectedCategory,
+                            whoPaidIndex: selectedWhoPaid,
+                          );
+                          ref.read(expenseProvider.notifier).state = [...ref.read(expenseProvider), newExpense];
+                          ref.read(homeProvider.notifier).setTab(2);
+                          context.goNamed(AppRoutes.home);
+                        },
                         title: AppStrings.saveExpense,
                       ),
                     ),
@@ -278,11 +288,7 @@ class _SectionLabel extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       label,
-      style: TextStyle(
-        fontSize: 14.sp,
-        fontWeight: FontWeight.w500,
-        color: AppColors.badgeGrayText,
-      ),
+      style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500, color: AppColors.badgeGrayText),
     );
   }
 }
@@ -292,11 +298,7 @@ class _InputField extends StatelessWidget {
   final String hint;
   final TextInputType keyboardType;
 
-  const _InputField({
-    required this.controller,
-    required this.hint,
-    this.keyboardType = TextInputType.text,
-  });
+  const _InputField({required this.controller, required this.hint, this.keyboardType = TextInputType.text});
 
   @override
   Widget build(BuildContext context) {
@@ -309,23 +311,12 @@ class _InputField extends StatelessWidget {
       child: TextField(
         controller: controller,
         keyboardType: keyboardType,
-        style: TextStyle(
-          fontSize: 14.sp,
-          color: AppColors.blackLight,
-          fontWeight: FontWeight.w500,
-        ),
+        style: TextStyle(fontSize: 14.sp, color: AppColors.blackLight, fontWeight: FontWeight.w500),
         decoration: InputDecoration(
           hintText: hint,
-          hintStyle: TextStyle(
-            fontSize: 14.sp,
-            color: AppColors.iconGray,
-            fontWeight: FontWeight.w400,
-          ),
+          hintStyle: TextStyle(fontSize: 14.sp, color: AppColors.iconGray, fontWeight: FontWeight.w400),
           border: InputBorder.none,
-          contentPadding: EdgeInsets.symmetric(
-            horizontal: 16.w,
-            vertical: 14.h,
-          ),
+          contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
         ),
       ),
     );
@@ -337,11 +328,7 @@ class _CategoryItem extends StatelessWidget {
   final String label;
   final bool isSelected;
 
-  const _CategoryItem({
-    required this.asset,
-    required this.label,
-    required this.isSelected,
-  });
+  const _CategoryItem({required this.asset, required this.label, required this.isSelected});
 
   @override
   Widget build(BuildContext context) {
@@ -349,10 +336,7 @@ class _CategoryItem extends StatelessWidget {
       decoration: BoxDecoration(
         color: isSelected ? AppColors.primaryLight3 : AppColors.white,
         borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(
-          color: isSelected ? AppColors.primary : AppColors.lightGray1,
-          width: isSelected ? 1.5 : 1,
-        ),
+        border: Border.all(color: isSelected ? AppColors.primary : AppColors.lightGray1, width: isSelected ? 1.5 : 1),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -369,10 +353,7 @@ class _CategoryItem extends StatelessWidget {
                 asset,
                 width: 20.sp,
                 height: 20.sp,
-                colorFilter: ColorFilter.mode(
-                  isSelected ? Colors.white : AppColors.badgeGrayText,
-                  BlendMode.srcIn,
-                ),
+                colorFilter: ColorFilter.mode(isSelected ? Colors.white : AppColors.badgeGrayText, BlendMode.srcIn),
               ),
             ),
           ),
@@ -417,10 +398,7 @@ class _WhoPaidItem extends StatelessWidget {
         decoration: BoxDecoration(
           color: isSelected ? AppColors.primaryLight3 : AppColors.white,
           borderRadius: BorderRadius.circular(12.r),
-          border: Border.all(
-            color: isSelected ? AppColors.primary : AppColors.lightGray,
-            width: isSelected ? 1.5 : 1,
-          ),
+          border: Border.all(color: isSelected ? AppColors.primary : AppColors.lightGray, width: isSelected ? 1.5 : 1),
         ),
         child: Row(
           children: [
@@ -429,20 +407,14 @@ class _WhoPaidItem extends StatelessWidget {
               height: 20.sp,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(
-                  color: isSelected ? AppColors.primary : AppColors.lightGray,
-                  width: 2,
-                ),
+                border: Border.all(color: isSelected ? AppColors.primary : AppColors.lightGray, width: 2),
               ),
               child: isSelected
                   ? Center(
                       child: Container(
                         width: 10.sp,
                         height: 10.sp,
-                        decoration: BoxDecoration(
-                          color: AppColors.primary,
-                          shape: BoxShape.circle,
-                        ),
+                        decoration: BoxDecoration(color: AppColors.primary, shape: BoxShape.circle),
                       ),
                     )
                   : null,
@@ -454,27 +426,16 @@ class _WhoPaidItem extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.black,
-                    ),
+                    style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold, color: AppColors.black),
                   ),
                   Text(
                     subtitle,
-                    style: TextStyle(
-                      fontSize: 12.sp,
-                      color: AppColors.badgeGrayText,
-                    ),
+                    style: TextStyle(fontSize: 12.sp, color: AppColors.badgeGrayText),
                   ),
                 ],
               ),
             ),
-            Icon(
-              icon,
-              color: isSelected ? AppColors.primary : AppColors.lightGray14,
-              size: 20.sp,
-            ),
+            Icon(icon, color: isSelected ? AppColors.primary : AppColors.lightGray14, size: 20.sp),
           ],
         ),
       ),
@@ -492,15 +453,15 @@ class _Avatar extends StatelessWidget {
     return Container(
       width: 44.sp,
       height: 44.sp,
-      decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+      decoration: BoxDecoration(
+        color: color,
+        shape: BoxShape.circle,
+        border: Border.all(color: AppColors.white, width: 2.w),
+      ),
       child: Center(
         child: Text(
           label,
-          style: TextStyle(
-            fontSize: 14.sp,
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(fontSize: 14.sp, color: Colors.white, fontWeight: FontWeight.bold),
         ),
       ),
     );

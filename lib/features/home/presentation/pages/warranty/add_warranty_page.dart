@@ -2,21 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:untitled1/core/constant/api_const.dart';
+import 'package:untitled1/services/api_services.dart';
 import 'package:untitled1/core/constant/app_assets.dart';
 import 'package:untitled1/core/constant/app_strings.dart';
 import 'package:untitled1/core/constant/app_theme.dart';
 import 'package:untitled1/core/extentions/extentions.dart';
 import 'package:untitled1/core/utils/widgets/app_gradient_button.dart';
 import 'package:untitled1/core/utils/widgets/common_app_bar_remindry.dart';
+import 'package:intl/intl.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../providers/warranty_provider.dart';
 
-class AddWarrantyPage extends StatefulWidget {
+class AddWarrantyPage extends ConsumerStatefulWidget {
   const AddWarrantyPage({super.key});
 
   @override
-  State<AddWarrantyPage> createState() => _AddWarrantyPageState();
+  ConsumerState<AddWarrantyPage> createState() => _AddWarrantyPageState();
 }
 
-class _AddWarrantyPageState extends State<AddWarrantyPage> {
+class _AddWarrantyPageState extends ConsumerState<AddWarrantyPage> {
   final TextEditingController _productNameController = TextEditingController();
   final TextEditingController _brandController = TextEditingController();
   final TextEditingController _invoiceController = TextEditingController();
@@ -35,32 +40,29 @@ class _AddWarrantyPageState extends State<AddWarrantyPage> {
   @override
   void initState() {
     super.initState();
-    _purchaseDate = DateTime.now();
-    _warrantyDuration = DateTime.now().add(const Duration(days: 365));
   }
 
-  String _formatDateTime(DateTime? dateTime) {
-    if (dateTime == null) return "mm/dd/yyyy, 0:00 AM";
-    final month = dateTime.month.toString().padLeft(2, '0');
-    final day = dateTime.day.toString().padLeft(2, '0');
-    final year = dateTime.year;
-    
-    int hour = dateTime.hour;
-    final String amPm = hour >= 12 ? 'PM' : 'AM';
-    hour = hour % 12;
-    if (hour == 0) hour = 12;
-    final String minute = dateTime.minute.toString().padLeft(2, '0');
-    
-    return "$month/$day/$year, $hour:$minute $amPm";
-  }
 
   Future<void> _pickDate(bool isPurchase) async {
+    FocusManager.instance.primaryFocus?.unfocus();
+
     final DateTime? pickedDate = await showDatePicker(
       context: context,
-      initialDate:
-          (isPurchase ? _purchaseDate : _warrantyDuration) ?? DateTime.now(),
+      initialDate: (isPurchase ? _purchaseDate : _warrantyDuration) ?? DateTime.now(),
       firstDate: DateTime(2020),
       lastDate: DateTime(2035),
+      builder: (context, child) => Theme(
+        data: ThemeData.light().copyWith(
+          colorScheme: const ColorScheme.light(
+            primary: AppColors.primary,
+            onPrimary: AppColors.white,
+            surface: AppColors.white,
+            onSurface: AppColors.blackLight,
+          ),
+          dialogTheme: const DialogThemeData(backgroundColor: AppColors.white),
+        ),
+        child: child!,
+      ),
     );
 
     if (pickedDate != null) {
@@ -69,6 +71,29 @@ class _AddWarrantyPageState extends State<AddWarrantyPage> {
         context: context,
         initialTime: TimeOfDay.fromDateTime(
           (isPurchase ? _purchaseDate : _warrantyDuration) ?? DateTime.now(),
+        ),
+        builder: (context, child) => Theme(
+          data: ThemeData.light().copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: AppColors.primary,
+              onPrimary: AppColors.white,
+              secondary: AppColors.primary,
+              onSecondary: AppColors.white,
+              surface: AppColors.white,
+              onSurface: AppColors.blackLight,
+              tertiary: AppColors.primary,
+            ),
+            timePickerTheme: TimePickerThemeData(
+              backgroundColor: AppColors.white,
+              dayPeriodColor: WidgetStateColor.resolveWith((states) => states.contains(WidgetState.selected) ? AppColors.primary.withOpacity(0.2) : Colors.transparent),
+              dayPeriodTextColor: WidgetStateColor.resolveWith((states) => states.contains(WidgetState.selected) ? AppColors.primary : AppColors.blackLight),
+              dayPeriodBorderSide: const BorderSide(color: AppColors.lightGray),
+              hourMinuteColor: WidgetStateColor.resolveWith((states) => states.contains(WidgetState.selected) ? AppColors.primary.withOpacity(0.2) : AppColors.lightGray6),
+              hourMinuteTextColor: WidgetStateColor.resolveWith((states) => states.contains(WidgetState.selected) ? AppColors.primary : AppColors.blackLight),
+            ),
+            dialogTheme: const DialogThemeData(backgroundColor: AppColors.white),
+          ),
+          child: child!,
         ),
       );
 
@@ -87,6 +112,60 @@ class _AddWarrantyPageState extends State<AddWarrantyPage> {
             _warrantyDuration = newDateTime;
           }
         });
+      }
+    }
+    FocusManager.instance.primaryFocus?.unfocus();
+  }
+
+  Future<void> _saveWarranty() async {
+    if (_productNameController.text.trim().isEmpty ||
+        _brandController.text.trim().isEmpty ||
+        _storeController.text.trim().isEmpty ||
+        _purchaseDate == null ||
+        _warrantyDuration == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("All fields are required")),
+      );
+      return;
+    }
+
+    if (!_warrantyDuration!.isAfter(_purchaseDate!)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Warranty expiry date must be after purchase date")),
+      );
+      return;
+    }
+
+    final payload = {
+      "product_name": _productNameController.text.trim(),
+      "brand": _brandController.text.trim(),
+      "category": _selectedCategory,
+      "purchase_date_time": _purchaseDate!.toUtc().toIso8601String(),
+      "garranty_duration": _warrantyDuration!.toUtc().toIso8601String(),
+      "warranty_duration": _warrantyDuration!.toUtc().toIso8601String(),
+      "invoice_number": _invoiceController.text.trim(),
+      "store_location": _storeController.text.trim(),
+    };
+
+    try {
+      final response = await ApiService().post(ApiConsts.addWarranty, data: payload);
+
+      if (response.isSuccess) {
+        // Refresh warranty list
+        ref.read(warrantyProvider).fetchWarranties();
+
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Warranty saved successfully")));
+          context.pop();
+        }
+      } else {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(response.message ?? "Failed to save warranty")));
+        }
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Error: $e")));
       }
     }
   }
@@ -132,7 +211,8 @@ class _AddWarrantyPageState extends State<AddWarrantyPage> {
                   _SectionLabel(label: AppStrings.purchaseDate),
                   8.hBox,
                   _SelectorField(
-                    value: _formatDateTime(_purchaseDate),
+                    value: _purchaseDate == null ? "Pick purchase date & time" : DateFormat('MM/dd/yyyy, hh:mm a').format(_purchaseDate!),
+                    isHint: _purchaseDate == null,
                     icon: AppAssets.calender,
                     onTap: () => _pickDate(true),
                   ),
@@ -141,7 +221,8 @@ class _AddWarrantyPageState extends State<AddWarrantyPage> {
                   _SectionLabel(label: AppStrings.warrantyDuration),
                   8.hBox,
                   _SelectorField(
-                    value: _formatDateTime(_warrantyDuration),
+                    value: _warrantyDuration == null ? "Pick warranty expiry date & time" : DateFormat('MM/dd/yyyy, hh:mm a').format(_warrantyDuration!),
+                    isHint: _warrantyDuration == null,
                     icon: AppAssets.calender,
                     onTap: () => _pickDate(false),
                   ),
@@ -163,7 +244,7 @@ class _AddWarrantyPageState extends State<AddWarrantyPage> {
 
                   Center(
                     child: AppGradientButton(
-                      onTap: () => context.pop(),
+                      onTap: _saveWarranty,
                       title: AppStrings.saveWarranty,
                       icon: Icon(Icons.done_all_rounded,
                           color: AppColors.white, size: 18.sp),
@@ -232,8 +313,9 @@ class _SelectorField extends StatelessWidget {
   final String value;
   final String icon;
   final VoidCallback onTap;
+  final bool isHint;
   const _SelectorField(
-      {required this.value, required this.icon, required this.onTap});
+      {required this.value, required this.icon, required this.onTap, this.isHint = false});
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -252,7 +334,7 @@ class _SelectorField extends StatelessWidget {
                 child: Text(value,
                     style: TextStyle(
                         fontSize: 14.sp,
-                        color: AppColors.blackLight,
+                        color: isHint ? AppColors.iconGray : AppColors.blackLight,
                         fontWeight: FontWeight.w500))),
             SvgPicture.asset(icon,
                 width: 20.sp,

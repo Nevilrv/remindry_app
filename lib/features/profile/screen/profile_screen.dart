@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
@@ -6,13 +7,16 @@ import 'package:untitled1/core/constant/app_%20text_style.dart';
 import 'package:untitled1/core/constant/app_assets.dart';
 import 'package:untitled1/core/constant/app_theme.dart';
 import 'package:untitled1/core/extentions/extentions.dart';
+import 'package:untitled1/features/home/presentation/providers/home_provider.dart';
+import 'package:untitled1/features/auth/model/user_data_model.dart';
 import 'package:untitled1/routes/app_routes.dart';
 
-class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({super.key});
+class ProfileScreen extends ConsumerWidget {
+  ProfileScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    HomeProvider homeProviderData = ref.watch(homeProvider);
     return Scaffold(
       body: Stack(
         children: [
@@ -28,10 +32,12 @@ class ProfileScreen extends StatelessWidget {
                   // Custom Header
                   _buildHeader(context),
                   28.hBox, // Avatar
-                  _buildProfileAvatar(),
+                  _buildProfileAvatar(homeProviderData.profileData?.data),
                   14.hBox,
                   Text(
-                    "John Doe",
+                    homeProviderData.profileData?.data?.firstName != null
+                        ? "${homeProviderData.profileData!.data!.firstName} ${homeProviderData.profileData!.data!.lastName}"
+                        : "User Name",
                     style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold, color: AppColors.black1),
                   ),
                   // SizedBox(height: 4.h),
@@ -49,7 +55,7 @@ class ProfileScreen extends StatelessWidget {
                   SizedBox(height: 24.h),
 
                   // Info Cards
-                  _buildPersonalInfoCard(context),
+                  _buildPersonalInfoCard(context, homeProviderData.profileData?.data),
                   SizedBox(height: 17.h),
 
                   // Upgrade to Premium Card
@@ -57,7 +63,7 @@ class ProfileScreen extends StatelessWidget {
                   SizedBox(height: 17.h),
 
                   // Account Details Card
-                  _buildAccountDetailsCard(),
+                  _buildAccountDetailsCard(homeProviderData.profileData?.data),
                   SizedBox(height: 17.h),
 
                   // Health Score Card
@@ -109,7 +115,15 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildProfileAvatar() {
+  Widget _buildProfileAvatar(Data? data) {
+    String initials = "U";
+    if (data?.firstName != null && data!.firstName!.isNotEmpty) {
+      initials = data.firstName![0].toUpperCase();
+      if (data.lastName != null && data.lastName!.isNotEmpty) {
+        initials += data.lastName![0].toUpperCase();
+      }
+    }
+
     return Container(
       width: 100.r,
       height: 100.r,
@@ -124,13 +138,13 @@ class ProfileScreen extends StatelessWidget {
       ),
       alignment: Alignment.center,
       child: Text(
-        "JD",
+        initials,
         style: TextStyle(fontSize: 32.sp, fontWeight: FontWeight.w800, color: AppColors.white),
       ),
     );
   }
 
-  Widget _buildPersonalInfoCard(BuildContext context) {
+  Widget _buildPersonalInfoCard(BuildContext context, Data? data) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
       decoration: BoxDecoration(
@@ -141,7 +155,12 @@ class ProfileScreen extends StatelessWidget {
       ),
       child: Column(
         children: [
-          _buildInfoItem(AppAssets.person, "Full Name", "John Doe", onEdit: () => context.pushNamed(AppRoutes.editFullName)),
+          _buildInfoItem(
+            AppAssets.person,
+            "Full Name",
+            data != null ? "${data.firstName ?? ""} ${data.lastName ?? ""}".trim() : "User Name",
+            onEdit: () => context.pushNamed(AppRoutes.editFullName),
+          ),
           Padding(
             padding: EdgeInsets.symmetric(vertical: 16.h),
             child: Divider(height: 1, color: AppColors.lightGray3),
@@ -149,7 +168,7 @@ class ProfileScreen extends StatelessWidget {
           _buildInfoItem(
             AppAssets.call_1,
             "Phone Number",
-            "+1 (555) 000-0000",
+            data?.phoneNumber ?? "Phone Number",
             onEdit: () => context.pushNamed(AppRoutes.editPhoneNumber),
           ),
         ],
@@ -237,14 +256,11 @@ class ProfileScreen extends StatelessWidget {
                       end: Alignment.bottomRight,
                     ),
                     borderRadius: BorderRadius.circular(12.r),
-                    boxShadow: [BoxShadow(color: AppColors.redGradient.withValues(alpha: 0.4), blurRadius: 20, offset: const Offset(0, 10))],
+                    boxShadow: [
+                      BoxShadow(color: AppColors.redGradient.withValues(alpha: 0.4), blurRadius: 20, offset: const Offset(0, 10)),
+                    ],
                   ),
-                  child: Center(
-                    child: SvgPicture.asset(
-                      AppAssets.king,
-                      width: 18.r,
-                    ),
-                  ),
+                  child: Center(child: SvgPicture.asset(AppAssets.king, width: 18.r)),
                 ),
                 SizedBox(width: 16.w),
                 Expanded(
@@ -260,7 +276,11 @@ class ProfileScreen extends StatelessWidget {
                           children: [
                             TextSpan(
                               text: "Unlock every feature\n— from ",
-                              style: TextStyle(color: AppColors.white.withValues(alpha: 0.45), fontSize: 11.sp, fontWeight: FontWeight.w400),
+                              style: TextStyle(
+                                color: AppColors.white.withValues(alpha: 0.45),
+                                fontSize: 11.sp,
+                                fontWeight: FontWeight.w400,
+                              ),
                             ),
                             TextSpan(
                               text: "\$4.99/mo",
@@ -281,7 +301,9 @@ class ProfileScreen extends StatelessWidget {
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(colors: [AppColors.pinkGradient, AppColors.redGradient]),
                     borderRadius: BorderRadius.circular(12.r),
-                    boxShadow: [BoxShadow(color: AppColors.redGradient.withValues(alpha: 0.4), blurRadius: 20, offset: const Offset(0, 10))],
+                    boxShadow: [
+                      BoxShadow(color: AppColors.redGradient.withValues(alpha: 0.4), blurRadius: 20, offset: const Offset(0, 10)),
+                    ],
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -340,10 +362,15 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildAccountDetailsCard() {
+  Widget _buildAccountDetailsCard(Data? data) {
+    String memberSince = "N/A";
+    if (data?.createdAt != null) {
+      final months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+      memberSince = "${months[data!.createdAt!.month - 1]} ${data.createdAt!.year}";
+    }
+
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 21.w, vertical: 17.h),
-
       decoration: BoxDecoration(
         color: AppColors.white,
         borderRadius: BorderRadius.circular(24.r),
@@ -352,19 +379,11 @@ class ProfileScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            "Account",
-            style: TextStyle(fontSize: 12.sp, color: AppColors.gray1, fontWeight: FontWeight.w400),
-          ),
+          Text("Account", style: TextStyle(fontSize: 12.sp, color: AppColors.gray1, fontWeight: FontWeight.w400)),
           SizedBox(height: 17.h),
-          _buildDetailRow("Member since", "March 2024"),
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 9.h),
-            child: Divider(color: AppColors.extraLightGray, height: 2),
-          ),
-
-          // SizedBox(height: 12.h),
-          _buildDetailRow("Plan", "Premium"),
+          _buildDetailRow("Member since", memberSince),
+          Padding(padding: EdgeInsets.symmetric(vertical: 9.h), child: Divider(color: AppColors.extraLightGray, height: 2)),
+          _buildDetailRow("Plan", data?.isPlan == true ? (data?.planName ?? "Premium") : "Free"),
         ],
       ),
     );

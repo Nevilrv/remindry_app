@@ -11,11 +11,30 @@ import 'package:untitled1/core/utils/widgets/common_app_bar_remindry.dart';
 
 import '../../../../../routes/app_routes.dart';
 
-class EventsPage extends StatelessWidget {
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
+import '../../model/event_response_model.dart';
+import '../../providers/event_provider.dart';
+
+class EventsPage extends ConsumerStatefulWidget {
   const EventsPage({super.key});
 
   @override
+  ConsumerState<EventsPage> createState() => _EventsPageState();
+}
+
+class _EventsPageState extends ConsumerState<EventsPage> {
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() => ref.read(eventProvider).fetchEvents());
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final eventWatch = ref.watch(eventProvider);
+    final events = eventWatch.eventResponse?.data?.event ?? [];
+
     return Scaffold(
       backgroundColor: AppColors.lightGray6,
       body: Column(
@@ -28,40 +47,37 @@ class EventsPage extends StatelessWidget {
 
           // ─── Body ────────────────────────────────────────────────────────
           Expanded(
-            child: SingleChildScrollView(
-              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _SectionHeader(title: AppStrings.recommendedByAi),
-                  16.hBox,
-                  _EventCard(
-                    day: "24",
-                    month: "FEB",
-                    title: "Sister's Wedding",
-                    subtitle: "New York Hall • 7:00 PM",
-                    aiTip: AppStrings.dontForgetGift,
-                  ),
-                  21.hBox,
-                  _SectionHeader(title: AppStrings.otherEvents),
-                  12.hBox,
-                  _EventCard(
-                    day: "24",
-                    month: "FEB",
-                    title: "Design Conference",
-                    subtitle: "Downtown • 9:00 AM",
-                  ),
-                  8.hBox,
-                  _EventCard(
-                    day: "24",
-                    month: "FEB",
-                    title: "Nick Wedding",
-                    subtitle: "Downtown • 10:00 AM",
-                  ),
-                  32.hBox,
-                ],
-              ),
-            ),
+            child: eventWatch.isLoading
+                ? const Center(child: CircularProgressIndicator(color: AppColors.primary))
+                : events.isEmpty
+                    ? Center(child: Text(AppStrings.nothingHere, style: TextStyle(color: AppColors.badgeGrayText)))
+                    : SingleChildScrollView(
+                        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if (events.any((e) => e.eventBeforeReminderTitle != null || e.eventBeforeReminderTime != null)) ...[
+                              _SectionHeader(title: AppStrings.recommendedByAi),
+                              16.hBox,
+                              ...events.where((e) => e.eventBeforeReminderTitle != null || e.eventBeforeReminderTime != null).map((e) {
+                                return Padding(
+                                  padding: EdgeInsets.only(bottom: 21.h),
+                                  child: _buildEventCard(e),
+                                );
+                              }),
+                            ],
+                            _SectionHeader(title: AppStrings.otherEvents),
+                            12.hBox,
+                            ...events.where((e) => e.eventBeforeReminderTitle == null && e.eventBeforeReminderTime == null).map((e) {
+                              return Padding(
+                                padding: EdgeInsets.only(bottom: 8.h),
+                                child: _buildEventCard(e),
+                              );
+                            }),
+                            32.hBox,
+                          ],
+                        ),
+                      ),
           ),
 
           // ─── Bottom Button ─────────────────────────────────────────────
@@ -83,6 +99,22 @@ class EventsPage extends StatelessWidget {
           10.hBox,
         ],
       ),
+    );
+  }
+
+  Widget _buildEventCard(Event event) {
+    final dateTime = (event.eventDateTime ?? DateTime.now()).toLocal();
+    final day = dateTime.day.toString().padLeft(2, '0');
+    final month = DateFormat('MMM').format(dateTime).toUpperCase();
+    final time = DateFormat('h:mm a').format(dateTime);
+    final subtitle = "${event.eventLocation ?? 'No Location'} • $time";
+
+    return _EventCard(
+      day: day,
+      month: month,
+      title: event.eventTitle ?? "No Title",
+      subtitle: subtitle,
+      aiTip: event.eventBeforeReminderTitle,
     );
   }
 }

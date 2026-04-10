@@ -1,22 +1,17 @@
 class AppStrings {
   static const String remindry = "Remindry";
-  static const String yourAiAssistant =
-      "Your AI assistant for life’s\nimportant moments";
+  static const String yourAiAssistant = "Your AI assistant for life’s\nimportant moments";
   static const String onboardingTitle1 = "Too much to remember?";
-  static const String onboardingDescription1 =
-      "Invitations, warranties, medicines, money…\nIt's hard to keep track of everything.";
+  static const String onboardingDescription1 = "Invitations, warranties, medicines, money…\nIt's hard to keep track of everything.";
 
   static const String onboardingTitle2 = "Relax, AI's got this.";
-  static const String onboardingDescription2 =
-      "Remindry uses AI to read documents,\norganize them, and remind you automatically.";
+  static const String onboardingDescription2 = "Remindry uses AI to read documents,\norganize them, and remind you automatically.";
 
   static const String onboardingTitle3 = "You are in control.";
-  static const String onboardingDescription3 =
-      "AI suggests. You decide. Nothing happens\nwithout your confirmation.";
+  static const String onboardingDescription3 = "AI suggests. You decide. Nothing happens\nwithout your confirmation.";
 
   static const String onboardingTitle4 = "Ready to organize your life?";
-  static const String onboardingDescription4 =
-      "Let's get you set up in seconds.\n";
+  static const String onboardingDescription4 = "Let's get you set up in seconds.\n";
 
   static const String next = "Next";
   static const String privacyPolicy = "Privacy Policy";
@@ -29,6 +24,8 @@ class AppStrings {
   static const String createAccount = " Create Account";
 
   static const String fullName = "Full Name";
+  static const String firstName = "First Name";
+  static const String lastName = "Last Name";
   static const String join = "Join";
   static const String joinRemindry = "Join Remindry for a healthier life.";
   static const String enterDetails = "Enter your details to register.";
@@ -45,8 +42,7 @@ class AppStrings {
   static const String verifyCode = "Verify Code";
 
   static const String setPermissions = "Set Permissions";
-  static const String permissionsSubtitle =
-      "Help us provide better health reminders";
+  static const String permissionsSubtitle = "Help us provide better health reminders";
   static const String ocrScan = "OCR Scan";
   static const String ocrDesc = "Read medical reports automtically.";
   static const String reminders = "Reminders";
@@ -59,16 +55,14 @@ class AppStrings {
   // Add Reminder
   static const String addReminder = "Add Reminder";
   static const String enterReminderTitle = "Enter reminder title";
-  static const String reminderTitleHint =
-      "Doctor visit, Pay rent, Take medicine";
+  static const String reminderTitleHint = "Doctor visit, Pay rent, Take medicine";
   static const String notesDescription = "Notes / Description";
   static const String notesHint = "e.g. Dinner at Main St";
   static const String dateTime = "Date & Time";
   static const String category = "Category";
   static const String repeat = "Repeat";
   static const String aiTip = "AI TIP:";
-  static const String aiTipDescription =
-      " You usually take this medicine at 8:00 AM";
+  static const String aiTipDescription = " You usually take this medicine at 8:00 AM";
   static const String saveReminder = "Save Reminder";
 
   // Events
@@ -115,7 +109,7 @@ class AppStrings {
 
   // Warranties
   static const String warranties = "Warranties";
-  static const String activeWarranties = "Active (4)";
+  static const String activeWarranties = "Active";
   static const String expiredWarranties = "Expired";
   static const String addWarrantyDetails = "Add Warranty Details";
   static const String productName = "Product Name";
@@ -141,10 +135,8 @@ class AppStrings {
   static const String askRemindry = "Ask Remindry";
   static const String whatCanIHelpWith = "What can I help with ?";
   static const String startNewChat = "Start New Chat";
-  static const String aiFeature1 =
-      "Remembers what user said earlier in the conversation.";
-  static const String aiFeature2 =
-      "Allows user to provide follow-up corrections.";
+  static const String aiFeature1 = "Remembers what user said earlier in the conversation.";
+  static const String aiFeature2 = "Allows user to provide follow-up corrections.";
   static const String aiFeature3 = "Trained to decline inappropriate requests.";
   static const String writeAMessage = "Write a message";
 
@@ -159,19 +151,15 @@ class AppStrings {
   static const String date = "Date";
   static const String dateValue = "Feb 7, 2025";
   static const String aiInsights = "AI Insights";
-  static const String aiInsightsDesc =
-      "Set A Reminder To Claim Insurance For This Bill Within 30 Days?";
+  static const String aiInsightsDesc = "Set A Reminder To Claim Insurance For This Bill Within 30 Days?";
   static const String saveRemind = "Save & Remind";
-  static const String documentsProcessedLocally =
-      "Your documents are processed locally\non your device for maximum privacy.";
+  static const String documentsProcessedLocally = "Your documents are processed locally\non your device for maximum privacy.";
 
   // Notifications
   static const String notifications = "Notifications";
   static const String noNotifications = "No notifications yet";
-  static const String notificationsDesc =
-      "We'll let you know when something important happens.";
-  static const String trackHealthStayControl =
-      "Track Your Health,\nStay in Control";
+  static const String notificationsDesc = "We'll let you know when something important happens.";
+  static const String trackHealthStayControl = "Track Your Health,\nStay in Control";
   static const String hi = "Hi, ";
   static const String twoBigEventsThisWeek = "2 big events this week";
   static const String quickAccess = "Quick Access";
@@ -217,8 +205,7 @@ class AppStrings {
   static const String debt = "Debt";
   static const String spendingBreakdown = "Spending Breakdown";
   static const String pendingDebts = "Pending Debts";
-  static const String raviDebtInsight =
-      "Ravi's Debt Is Due In 2 Days. You Spent 18% More On Food This Month.";
+  static const String raviDebtInsight = "Ravi's Debt Is Due In 2 Days. You Spent 18% More On Food This Month.";
 
   // Add Expense
   static const String addExpense = "Add Expense";
@@ -269,12 +256,11 @@ class AppStrings {
   // Edit Profile
   static const String editFullName = "Edit Full Name";
   static const String previewSubtitle = "Preview — how others see you";
-  static const String firstName = "First name";
-  static const String lastName = "Last name";
+  // static const String firstName = "First name";
+  // static const String lastName = "Last name";
   static const String gender = "Gender";
   static const String quickTip = "Quick tip";
-  static const String realNameTip =
-      "Use your real name so Smart AI health providers can recognise you.";
+  static const String realNameTip = "Use your real name so Smart AI health providers can recognise you.";
   static const String saveName = "Save Name";
   static const String looksGood = "Looks good!";
   static const String editPhoneNumber = "Edit Phone Number";
@@ -282,8 +268,7 @@ class AppStrings {
   static const String enterNumberValue = "Enter number";
   static const String valid = "Valid";
   static const String verificationRequired = "Verification required";
-  static const String sendVerificationDesc =
-      "We'll send a 6-digit code to verify this number.";
+  static const String sendVerificationDesc = "We'll send a 6-digit code to verify this number.";
   static const String send = "Send";
   static const String verifyFirst = "Verify First";
 
@@ -321,4 +306,7 @@ class AppStrings {
   static const String cloudBackup = "Cloud backup";
   static const String noAdsPlan = "No ads";
   static const String popular = "POPULAR";
+  static const String addFirstExpense = "By clicking Add your first Expense";
+  static const String nothingHere = "opps nothing  here (:";
+  static const String addExpensePlus = "+Add Expense";
 }

@@ -30,13 +30,7 @@ class AppBottomBar extends ConsumerWidget {
             center: Alignment.center,
             radius: 2.0,
           ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
+          boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 4))],
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -45,10 +39,7 @@ class AppBottomBar extends ConsumerWidget {
           children: [
             Expanded(
               child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(34.r),
-                  color: Colors.black,
-                ),
+                decoration: BoxDecoration(borderRadius: BorderRadius.circular(34.r), color: Colors.black),
                 padding: EdgeInsets.symmetric(horizontal: 17.w),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -119,20 +110,12 @@ class _NavItem extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            SvgPicture.asset(
-              isSelected ? selectedIcon : unselectedIcon,
-              width: 20.sp,
-              height: 20.sp,
-            ),
+            SvgPicture.asset(isSelected ? selectedIcon : unselectedIcon, width: 20.sp, height: 20.sp),
             if (isSelected) ...[
               8.wBox,
               Text(
                 label,
-                style: TextStyle(
-                  color: AppColors.white,
-                  fontSize: 12.sp,
-                  fontWeight: FontWeight.w500,
-                ),
+                style: TextStyle(color: AppColors.white, fontSize: 12.sp, fontWeight: FontWeight.w500),
               ),
             ],
           ],
@@ -161,12 +144,7 @@ class _AiNavItem extends StatelessWidget {
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
 
-        child: Lottie.asset(
-          AppAssets.aiChatData,
-          fit: BoxFit.cover,
-          width: 37.h,
-          height: 37.h,
-        ),
+        child: Lottie.asset(AppAssets.aiChatData, fit: BoxFit.cover, width: 37.h, height: 37.h),
       ),
     );
   }

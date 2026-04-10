@@ -4,74 +4,64 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../core/constant/app_ text_style.dart';
-import '../../core/constant/app_assets.dart';
 import '../../core/constant/app_theme.dart';
+import 'providers/notification_provider.dart';
 import 'widgets/notification_card_widget.dart';
 
-class UnreadMessageScreen extends ConsumerWidget {
+class UnreadMessageScreen extends ConsumerStatefulWidget {
   const UnreadMessageScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    // Grouping the data properly so that FlipCardSwiper actually has a stack to display
-    final todayNotifications = [
-      {
-        "category": "Urgent",
-        "titleText": "Final Reminder",
-        "subtitle": "AI Escalated",
-        "message": "Sony Headphones Warranty Expires Tomorrow",
-        "icon": AppAssets.alert,
-        "categoryColor": AppColors.red,
-      },
-      {
-        "category": "Urgent",
-        "titleText": "Second Reminder",
-        "subtitle": "AI Escalated",
-        "message": "Your subscription is about to end.",
-        "icon": AppAssets.alert,
-        "categoryColor": AppColors.red,
-      },
-      {
-        "category": "Urgent",
-        "titleText": "Third Reminder",
-        "subtitle": "AI Escalated",
-        "message": "Please update your payment method.",
-        "icon": AppAssets.alert,
-        "categoryColor": AppColors.red,
-      },
-    ];
+  ConsumerState<UnreadMessageScreen> createState() => _UnreadMessageScreenState();
+}
 
-    final yesterdayNotifications = [
-      {
-        "category": "Medication",
-        "titleText": "Time for Antibiotics",
-        "subtitle": "AI Escalated",
-        "message": "Take With Food • 8:00 AM Daily",
-        "icon": AppAssets.tablet,
-        "categoryColor": AppColors.orange,
-      },
-      {
-        "category": "Medication",
-        "titleText": "Vitamin D",
-        "subtitle": "Daily",
-        "message": "Take one tablet after lunch",
-        "icon": AppAssets.tablet,
-        "categoryColor": AppColors.orange,
-      },
-      {
-        "category": "Medication",
-        "titleText": "Vitamin D",
-        "subtitle": "Daily",
-        "message": "Take one tablet after lunch",
-        "icon": AppAssets.tablet,
-        "categoryColor": AppColors.orange,
-      },
-    ];
+class _UnreadMessageScreenState extends ConsumerState<UnreadMessageScreen> {
+  final Set<String> _viewAllSections = {};
 
-    final sections = [
-      {"title": "Today", "count": "5", "data": todayNotifications},
-      {"title": "Yesterday", "count": "8", "data": yesterdayNotifications},
-    ];
+  @override
+  Widget build(BuildContext context) {
+    final notificationP = ref.watch(notificationProvider);
+
+    if (notificationP.isLoading && notificationP.unreadNotifications.isEmpty) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (notificationP.unreadNotifications.isEmpty) {
+      return const Center(
+        child: Text(
+          "No unread notifications",
+          style: TextStyle(color: Colors.grey, fontSize: 16),
+        ),
+      );
+    }
+
+    final groupedNotifications = notificationP.groupNotificationsByDate(notificationP.unreadNotifications);
+    final sections = groupedNotifications.entries.map((entry) {
+      final sectionTitle = entry.key;
+      final isViewAll = _viewAllSections.contains(sectionTitle);
+      final rawData = entry.value;
+
+      // Limit to 3 if not view all
+      final displayData = isViewAll ? rawData : rawData.take(3).toList();
+
+      return {
+        "title": sectionTitle,
+        "count": rawData.length.toString(),
+        "isViewAll": isViewAll,
+        "data": displayData
+            .map(
+              (n) => {
+                "category": n.notificationType ?? "General",
+                "titleText": n.title ?? "",
+                "subtitle": n.notificationType ?? "",
+                "message": n.body ?? "",
+                "icon": notificationP.getIconForCategory(n.notificationType),
+                "categoryColor": notificationP.getColorForCategory(n.notificationType),
+              },
+            )
+            .toList(),
+      };
+    }).toList();
 
     return ListView.builder(
       padding: EdgeInsets.zero,
@@ -81,6 +71,7 @@ class UnreadMessageScreen extends ConsumerWidget {
         final title = section["title"] as String;
         final count = section["count"] as String;
         final notifications = section["data"] as List<Map<String, dynamic>>;
+        final isViewAll = section["isViewAll"] as bool;
 
         return Padding(
           padding: EdgeInsets.only(bottom: 20.h),
@@ -93,27 +84,56 @@ class UnreadMessageScreen extends ConsumerWidget {
                   Text(title, style: AppTextStyle.f12W400Black),
                   SizedBox(width: 8.w),
                   Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 12.w,
-                      vertical: 5.h,
-                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 5.h),
                     decoration: BoxDecoration(
-                      border: Border.all(
-                        color: AppColors.lightGray12.withValues(alpha: 0.3),
-                      ),
+                      border: Border.all(color: AppColors.lightGray12.withOpacity(0.3)),
                       color: AppColors.lightGray11,
                       borderRadius: BorderRadius.circular(6.r),
                     ),
                     child: Text(count, style: AppTextStyle.f12W400Black),
                   ),
                   const Spacer(),
-                  Text("View All", style: AppTextStyle.f12W400Black),
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        if (isViewAll) {
+                          _viewAllSections.remove(title);
+                        } else {
+                          _viewAllSections.add(title);
+                        }
+                      });
+                    },
+                    child: Text(
+                      isViewAll ? "Show Less" : "View All",
+                      style: AppTextStyle.f12W400Black.copyWith(color: const Color(0xff3C3C3C)),
+                    ),
+                  ),
                 ],
               ),
-              SizedBox(height: 40.h),
+              SizedBox(height: isViewAll ? 20.h : 40.h),
 
-              // SWIPER LIST
-              StackedNotificationList(notifications: notifications),
+              // LIST OR SWIPER
+              if (isViewAll)
+                ListView.separated(
+                  padding: EdgeInsets.zero,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: notifications.length,
+                  separatorBuilder: (context, _) => SizedBox(height: 12.h),
+                  itemBuilder: (context, idx) {
+                    final card = notifications[idx];
+                    return NotificationCard(
+                      category: card["category"],
+                      titleText: card["titleText"],
+                      subtitle: card["subtitle"],
+                      message: card["message"],
+                      icon: card["icon"],
+                      categoryColor: card["categoryColor"],
+                    );
+                  },
+                )
+              else
+                StackedNotificationList(notifications: notifications),
             ],
           ),
         );

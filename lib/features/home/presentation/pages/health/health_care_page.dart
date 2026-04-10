@@ -1,54 +1,62 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:untitled1/core/constant/app_assets.dart';
 import 'package:untitled1/core/constant/app_strings.dart';
 import 'package:untitled1/core/constant/app_theme.dart';
 import 'package:untitled1/core/extentions/extentions.dart';
 import 'package:untitled1/core/utils/widgets/app_button.dart';
 import 'package:untitled1/core/utils/widgets/common_app_bar_remindry.dart';
-import '../../../../../routes/app_routes.dart';
 
-class HealthCarePage extends StatelessWidget {
+import '../../../../../routes/app_routes.dart';
+import '../../providers/health_provider.dart';
+
+class HealthCarePage extends ConsumerStatefulWidget {
   const HealthCarePage({super.key});
 
   @override
+  ConsumerState<HealthCarePage> createState() => _HealthCarePageState();
+}
+
+class _HealthCarePageState extends ConsumerState<HealthCarePage> {
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() => ref.read(healthProvider).fetchVisits());
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final healthWatch = ref.watch(healthProvider);
+    final visits = healthWatch.healthResponse?.data?.healthCare ?? [];
+
     return Scaffold(
       backgroundColor: AppColors.lightGray6,
       body: Column(
         children: [
           // ─── AppBar ─────────────────────────────────────────────────────
-          CommonAppBarRemindry(
-            title: AppStrings.healthCare,
-            subtitle: AppStrings.joinRemindry,
-          ),
+          CommonAppBarRemindry(title: AppStrings.healthCare, subtitle: AppStrings.joinRemindry),
 
           // ─── Body ────────────────────────────────────────────────────────
           Expanded(
-            child: SingleChildScrollView(
+            child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
               child: Column(
                 children: [
                   35.hBox,
                   // Heart Progress
                   Center(
-                    child: SvgPicture.asset(
-                      AppAssets.heartlayer,
-                      width: 110.sp,
-                      height: 110.sp,
-                    ),
+                    child: SvgPicture.asset(AppAssets.heartlayer, width: 110.sp, height: 110.sp),
                   ),
                   20.hBox,
                   Text(
                     AppStrings.adherenceScore,
                     textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w400,
-                      color: AppColors.black,
-                    ),
+                    style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w400, color: AppColors.black),
                   ),
                   35.hBox,
 
@@ -57,24 +65,38 @@ class HealthCarePage extends StatelessWidget {
                     alignment: Alignment.centerLeft,
                     child: Text(
                       AppStrings.upcomingCheckups,
-                      style: TextStyle(
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w400,
-                        color: AppColors.black,
-                      ),
+                      style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w400, color: AppColors.black),
                     ),
                   ),
                   12.hBox,
-                  _CheckupCard(
-                    title: AppStrings.drSmithCheckup,
-                    subtitle: AppStrings.timeCheckup,
-                  ),
-                  12.hBox,
-                  _CheckupCard(
-                    title: AppStrings.drSmithCheckup,
-                    subtitle: AppStrings.timeCheckup,
-                  ),
-                  32.hBox,
+                  if (healthWatch.isLoading)
+                    Center(child: CupertinoActivityIndicator(color: AppColors.primary))
+                  else if (visits.isEmpty)
+                    Center(
+                      child: Text(AppStrings.nothingHere, style: TextStyle(color: AppColors.badgeGrayText)),
+                    )
+                  else
+                    Expanded(
+                      child: ListView.separated(
+                        padding: EdgeInsets.zero,
+                        shrinkWrap: true,
+                        physics: AlwaysScrollableScrollPhysics(),
+                        itemCount: visits.length,
+                        separatorBuilder: (context, index) => 12.hBox,
+                        itemBuilder: (context, index) {
+                          final visit = visits[index];
+                          final dateStr = visit.visitDateTime != null
+                              ? DateFormat('hh:mm a • dd MMM, yyyy').format(visit.visitDateTime!.toLocal())
+                              : '';
+
+                          return _CheckupCard(
+                            title: "${visit.doctorName ?? 'Doctor'} ${visit.healthCareType ?? ''}",
+                            subtitle: "$dateStr ${visit.speciality ?? ""}",
+                          );
+                        },
+                      ),
+                    ),
+                  // 32.hBox,
                 ],
               ),
             ),
@@ -105,18 +127,12 @@ class _CheckupCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(16.r),
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(16.r),
-      ),
+      decoration: BoxDecoration(color: AppColors.white, borderRadius: BorderRadius.circular(16.r)),
       child: Row(
         children: [
           Container(
             padding: EdgeInsets.all(10.r),
-            decoration: BoxDecoration(
-              color: AppColors.lightBlueBox,
-              borderRadius: BorderRadius.circular(10.r),
-            ),
+            decoration: BoxDecoration(color: AppColors.lightBlueBox, borderRadius: BorderRadius.circular(10.r)),
             child: SvgPicture.asset(
               AppAssets.medical,
               height: 20.sp,
@@ -131,11 +147,7 @@ class _CheckupCard extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: TextStyle(
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.black,
-                  ),
+                  style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500, color: AppColors.black),
                 ),
                 4.hBox,
                 Text(

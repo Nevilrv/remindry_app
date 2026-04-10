@@ -1,8 +1,16 @@
-import 'package:flutter/material.dart';
 import 'package:country_picker/country_picker.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:untitled1/services/prefrense_services.dart';
 
-final loginProvider = ChangeNotifierProvider((ref) => LoginProvider());
+import '../../../../core/constant/api_const.dart';
+import '../../../../routes/app_routes.dart';
+import '../../../../services/api_services.dart';
+import '../../model/user_data_model.dart';
+
+final loginProvider = ChangeNotifierProvider.autoDispose((ref) => LoginProvider());
 
 class LoginProvider extends ChangeNotifier {
   final TextEditingController phoneController = TextEditingController();
@@ -26,6 +34,12 @@ class LoginProvider extends ChangeNotifier {
 
   LoginProvider() {
     phoneController.addListener(_onTextChanged);
+    clearAll();
+  }
+
+  void clearAll() {
+    phoneController.clear();
+    notifyListeners();
   }
 
   void _onTextChanged() {
@@ -45,6 +59,25 @@ class LoginProvider extends ChangeNotifier {
     phoneController.clear();
   }
 
+  login({required String countryCode, required String phoneNumber, required BuildContext context}) async {
+    String? token = await FirebaseMessaging.instance.getToken();
+
+    ApiResponse<UserResponse> response = await ApiService().post(
+      ApiConsts.loginAccount,
+      data: {"country_code": "+${countryCode}", "phone_number": phoneNumber, "fcm_token": token},
+      fromJson: (json) => UserResponse.fromJson(json),
+    );
+
+    if (response.statusCode == 200) {
+      await preferences.setUserData(response.data!);
+      await preferences.setString(SharedPreference.accessToken, response.data?.data?.token ?? "");
+      preferences.setBool(SharedPreference.login, true);
+      context.pushNamed(AppRoutes.verifyCode);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(response.message ?? "Failed to create account")));
+    }
+  }
+
   @override
   void dispose() {
     phoneController.removeListener(_onTextChanged);
@@ -52,4 +85,3 @@ class LoginProvider extends ChangeNotifier {
     super.dispose();
   }
 }
-

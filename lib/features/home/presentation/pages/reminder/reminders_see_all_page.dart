@@ -8,12 +8,18 @@ import 'package:untitled1/core/constant/app_theme.dart';
 import 'package:untitled1/core/extentions/extentions.dart';
 import 'package:untitled1/core/utils/widgets/common_app_bar_remindry.dart';
 import 'package:untitled1/routes/app_routes.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:untitled1/features/home/presentation/providers/reminder_provider.dart';
+import 'package:intl/intl.dart';
 
-class RemindersSeeAllPage extends StatelessWidget {
+class RemindersSeeAllPage extends ConsumerWidget {
   const RemindersSeeAllPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(reminderProvider);
+    final reminders = state.data?.quickReminder ?? [];
+
     return Scaffold(
       backgroundColor: AppColors.lightGray6,
       body: Column(
@@ -23,43 +29,82 @@ class RemindersSeeAllPage extends StatelessWidget {
             subtitle: AppStrings.joinRemindry,
           ),
           Expanded(
-            child: ListView.separated(
-              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
-              itemCount: 10,
-              separatorBuilder: (context, index) =>
-                  const Divider(height: 1, color: AppColors.lightGray1),
-              itemBuilder: (context, index) {
-                if (index % 2 == 0) {
-                  return _buildReminderTile(
-                    context,
-                    assetPath: AppAssets.tablet,
-                    iconBgColor: AppColors.lightOrange,
-                    iconColor: AppColors.orange,
-                    title: AppStrings.takeAntibiotics,
-                    subtitle: AppStrings.afterBreakfast,
-                    badge: AppStrings.now,
-                    badgeBgColor: AppColors.orange,
-                    badgeTextColor: AppColors.white,
-                  );
-                } else {
-                  return _buildReminderTile(
-                    context,
-                    assetPath: AppAssets.medical,
-                    iconBgColor: AppColors.lightBlueBox,
-                    iconColor: AppColors.primary,
-                    title: AppStrings.drSmithCheckup,
-                    subtitle: AppStrings.timeCheckup,
-                    badge: "TODAY",
-                    badgeBgColor: AppColors.badgeGray,
-                    badgeTextColor: AppColors.badgeGrayText,
-                  );
-                }
-              },
-            ),
+            child: state.isLoading && reminders.isEmpty
+                ? const Center(child: CircularProgressIndicator())
+                : reminders.isEmpty
+                    ? const Center(child: Text('No reminders found'))
+                    : ListView.separated(
+                        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
+                        itemCount: reminders.length,
+                        separatorBuilder: (context, index) => const Divider(height: 1, color: AppColors.lightGray1),
+                        itemBuilder: (context, index) {
+                          final reminder = reminders[index];
+                          final categoryData = _getCategoryData(reminder.category ?? "");
+                          final localDateTime = reminder.dateTime?.toLocal();
+                          final timeStr = localDateTime != null ? DateFormat('hh:mm a').format(localDateTime) : "N/A";
+
+                          return _buildReminderTile(
+                            context,
+                            assetPath: categoryData['icon'],
+                            iconBgColor: categoryData['bgColor'],
+                            iconColor: categoryData['iconColor'],
+                            title: reminder.title ?? "",
+                            subtitle: "$timeStr • ${reminder.repeat ?? ""}",
+                            badge: _getBadgeLabel(localDateTime),
+                            badgeBgColor: _getBadgeBgColor(localDateTime),
+                            badgeTextColor: _getBadgeTextColor(localDateTime),
+                          );
+                        },
+                      ),
           ),
         ],
       ),
     );
+  }
+
+  Map<String, dynamic> _getCategoryData(String category) {
+    switch (category.toLowerCase()) {
+      case 'health':
+        return {'icon': AppAssets.health, 'bgColor': AppColors.primaryLight3, 'iconColor': AppColors.primary};
+      case 'events':
+        return {'icon': AppAssets.event, 'bgColor': AppColors.lightGray2, 'iconColor': Colors.black};
+      case 'warranty':
+        return {'icon': AppAssets.warranty, 'bgColor': AppColors.lightGray10, 'iconColor': Colors.black};
+      case 'money':
+        return {'icon': AppAssets.money, 'bgColor': AppColors.gray2, 'iconColor': Colors.black};
+      default:
+        return {'icon': AppAssets.other, 'bgColor': AppColors.lightGray6, 'iconColor': Colors.black};
+    }
+  }
+
+  String _getBadgeLabel(DateTime? date) {
+    if (date == null) return "LATER";
+    final now = DateTime.now();
+    if (date.year == now.year && date.month == now.month && date.day == now.day) {
+      if (date.difference(now).inMinutes.abs() < 60) return "NOW";
+      return "TODAY";
+    }
+    return "LATER";
+  }
+
+  Color _getBadgeBgColor(DateTime? date) {
+    if (date == null) return AppColors.badgeGray;
+    final now = DateTime.now();
+    if (date.year == now.year && date.month == now.month && date.day == now.day) {
+      if (date.difference(now).inMinutes.abs() < 60) return AppColors.orange;
+      return AppColors.badgeGray;
+    }
+    return AppColors.badgeGray;
+  }
+
+  Color _getBadgeTextColor(DateTime? date) {
+    if (date == null) return AppColors.badgeGrayText;
+    final now = DateTime.now();
+    if (date.year == now.year && date.month == now.month && date.day == now.day) {
+      if (date.difference(now).inMinutes.abs() < 60) return Colors.white;
+      return AppColors.badgeGrayText;
+    }
+    return AppColors.badgeGrayText;
   }
 
   Widget _buildReminderTile(

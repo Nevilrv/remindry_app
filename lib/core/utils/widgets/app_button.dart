@@ -8,13 +8,7 @@ class AppButton extends StatelessWidget {
   final String title;
   final Widget? icon;
   final Gradient? gradient;
-  const AppButton({
-    super.key,
-    required this.onTap,
-    required this.title,
-    this.icon,
-    this.gradient,
-  });
+  const AppButton({super.key, required this.onTap, required this.title, this.icon, this.gradient});
 
   @override
   Widget build(BuildContext context) {
@@ -27,11 +21,7 @@ class AppButton extends StatelessWidget {
 
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(35.r),
-          gradient:
-              gradient ??
-              LinearGradient(
-                colors: [AppColors.buttonGray1, AppColors.buttonGray2],
-              ),
+          gradient: gradient ?? LinearGradient(colors: [AppColors.buttonGray1, AppColors.buttonGray2]),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -39,11 +29,7 @@ class AppButton extends StatelessWidget {
             if (icon != null) ...[icon!, 5.wBox],
             Text(
               title,
-              style: TextStyle(
-                fontSize: 14.sp,
-                color: AppColors.white,
-                fontWeight: FontWeight.w500,
-              ),
+              style: TextStyle(fontSize: 14.sp, color: AppColors.white, fontWeight: FontWeight.w500),
             ),
           ],
         ),

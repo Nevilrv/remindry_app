@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final otpProvider = ChangeNotifierProvider((ref) => OtpProvider());
+final otpProvider = ChangeNotifierProvider.autoDispose((ref) => OtpProvider());
 
 class OtpProvider extends ChangeNotifier {
   final List<TextEditingController> controllers =

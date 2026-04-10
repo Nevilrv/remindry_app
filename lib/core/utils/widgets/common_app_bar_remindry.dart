@@ -1,20 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:untitled1/core/constant/app_theme.dart';
 
-import 'package:flutter/services.dart';
-
-class CommonAppBarRemindry extends StatelessWidget
-    implements PreferredSizeWidget {
-  const CommonAppBarRemindry({
-    super.key,
-    required this.title,
-    this.subtitle,
-    this.showBackButton = true,
-    this.onBack,
-    this.actions,
-  });
+class CommonAppBarRemindry extends StatelessWidget implements PreferredSizeWidget {
+  const CommonAppBarRemindry({super.key, required this.title, this.subtitle, this.showBackButton = true, this.onBack, this.actions});
 
   final String title;
   final String? subtitle;
@@ -36,7 +27,7 @@ class CommonAppBarRemindry extends StatelessWidget
       child: Container(
         padding: EdgeInsets.only(
           top: MediaQuery.of(context).padding.top + 10.h,
-          left: showBackButton ? 24.w : 0,
+          left: showBackButton ? 24.w : 24.w,
           right: 16.w,
           bottom: 12.h,
         ),
@@ -56,11 +47,7 @@ class CommonAppBarRemindry extends StatelessWidget
                     border: Border.all(color: AppColors.lightGray1),
                   ),
                   child: Center(
-                    child: Icon(
-                      Icons.arrow_back_ios_new_rounded,
-                      size: 18.sp,
-                      color: AppColors.blackLight,
-                    ),
+                    child: Icon(Icons.arrow_back_ios_new_rounded, size: 18.sp, color: AppColors.blackLight),
                   ),
                 ),
               )
@@ -74,11 +61,7 @@ class CommonAppBarRemindry extends StatelessWidget
                 children: [
                   Text(
                     title,
-                    style: TextStyle(
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.black,
-                    ),
+                    style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold, color: AppColors.black),
                   ),
                   if (subtitle != null)
                     Text(

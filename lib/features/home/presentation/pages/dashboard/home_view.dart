@@ -3,18 +3,34 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:untitled1/core/constant/app_assets.dart';
 import 'package:untitled1/core/constant/app_strings.dart';
 import 'package:untitled1/core/constant/app_theme.dart';
 import 'package:untitled1/core/extentions/extentions.dart';
 import 'package:untitled1/features/home/presentation/providers/home_provider.dart';
+import 'package:untitled1/features/home/presentation/providers/reminder_provider.dart';
 import 'package:untitled1/routes/app_routes.dart';
 
-class HomeView extends ConsumerWidget {
+class HomeView extends ConsumerStatefulWidget {
   const HomeView({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<HomeView> createState() => _HomeViewState();
+}
+
+class _HomeViewState extends ConsumerState<HomeView> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(homeProvider).fetchProfile();
+      ref.read(reminderProvider.notifier).fetchReminders();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Stack(
       children: [
         // bg2 background at top
@@ -39,12 +55,7 @@ class HomeView extends ConsumerWidget {
                         // ─── Hero title ───────────────────────────────
                         Text(
                           "Track Your Health,\nStay in Control",
-                          style: TextStyle(
-                            fontSize: 26.sp,
-                            fontWeight: FontWeight.w400,
-                            color: AppColors.blackLight,
-                            height: 1.3,
-                          ),
+                          style: TextStyle(fontSize: 26.sp, fontWeight: FontWeight.w400, color: AppColors.blackLight, height: 1.3),
                         ),
                         16.hBox,
 
@@ -65,6 +76,8 @@ class HomeView extends ConsumerWidget {
                         24.hBox,
 
                         30.hBox,
+                        30.hBox,
+                        15.hBox,
                       ],
                     ),
                   ),
@@ -80,9 +93,15 @@ class HomeView extends ConsumerWidget {
 
 // ─── Header ─────────────────────────────────────────────────────────────────
 
-class _Header extends StatelessWidget {
+class _Header extends ConsumerWidget {
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final profile = ref.watch(homeProvider).profileData?.data;
+    final String fullName = "${profile?.firstName ?? "John"} ${profile?.lastName ?? "Doe"}";
+    final String initials = (profile?.firstName?.isNotEmpty ?? false)
+        ? (profile!.firstName![0] + (profile.lastName?.isNotEmpty == true ? profile.lastName![0] : ""))
+        : "JD";
+
     return Row(
       children: [
         // Avatar
@@ -91,18 +110,11 @@ class _Header extends StatelessWidget {
           child: Container(
             width: 44.sp,
             height: 44.sp,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.white,
-            ),
+            decoration: const BoxDecoration(shape: BoxShape.circle, color: Colors.white),
             child: Center(
               child: Text(
-                "JD",
-                style: TextStyle(
-                  color: AppColors.blackLight,
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.bold,
-                ),
+                initials,
+                style: TextStyle(color: AppColors.blackLight, fontSize: 16.sp, fontWeight: FontWeight.bold),
               ),
             ),
           ),
@@ -112,12 +124,8 @@ class _Header extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Hi, John Doe",
-              style: TextStyle(
-                fontSize: 15.sp,
-                fontWeight: FontWeight.bold,
-                color: AppColors.blackLight,
-              ),
+              "Hi, $fullName",
+              style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.bold, color: AppColors.blackLight),
             ),
             Text(
               "Good Afternoon",
@@ -128,25 +136,35 @@ class _Header extends StatelessWidget {
         const Spacer(),
         // Notification bell
         GestureDetector(
-          onTap: () => context.push(AppRoutes.notification),
-          child: Container(
-            width: 40.sp,
-            height: 40.sp,
-            decoration: const BoxDecoration(
-              color: AppColors.white,
-              shape: BoxShape.circle,
-            ),
-            child: Center(
-              child: SvgPicture.asset(
-                AppAssets.notificationIcon,
-                colorFilter: const ColorFilter.mode(
-                  AppColors.black,
-                  BlendMode.srcIn,
+          onTap: () {
+            ref.read(homeProvider).clearNotificationBadge();
+            context.push(AppRoutes.notification);
+          },
+          child: Stack(
+            children: [
+              Container(
+                width: 40.sp,
+                height: 40.sp,
+                decoration: const BoxDecoration(color: AppColors.white, shape: BoxShape.circle),
+                child: Center(
+                  child: Image.asset(AppAssets.notification, width: 20.sp, height: 20.sp),
                 ),
-                width: 20.sp,
-                height: 20.sp,
               ),
-            ),
+              if (ref.watch(homeProvider).hasNewNotification)
+                Positioned(
+                  top: 12,
+                  right: 11,
+                  child: Container(
+                    width: 8.r,
+                    height: 8.r,
+                    decoration: BoxDecoration(
+                      color: AppColors.red,
+                      shape: BoxShape.circle,
+                      border: Border.all(color: AppColors.black1, width: 1.5),
+                    ),
+                  ),
+                ),
+            ],
           ),
         ),
       ],
@@ -188,11 +206,7 @@ class _HealthCarouselState extends ConsumerState<_HealthCarousel> {
             controller: _pageController,
             onPageChanged: (index) => provider.setCarouselPage(index),
             physics: const BouncingScrollPhysics(),
-            children: const [
-              _HealthScoreCard(),
-              _HealthScoreCard(),
-              _HealthScoreCard(),
-            ],
+            children: const [_HealthScoreCard(), _HealthScoreCard(), _HealthScoreCard()],
           ),
         ),
         12.hBox,
@@ -211,10 +225,7 @@ class _HealthScoreCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(16.r),
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(16.r),
-      ),
+      decoration: BoxDecoration(color: AppColors.white, borderRadius: BorderRadius.circular(16.r)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -224,16 +235,9 @@ class _HealthScoreCard extends StatelessWidget {
               Container(
                 width: 40.sp,
                 height: 40.sp,
-                decoration: const BoxDecoration(
-                  color: AppColors.blueColor,
-                  shape: BoxShape.circle,
-                ),
+                decoration: const BoxDecoration(color: AppColors.blueColor, shape: BoxShape.circle),
                 child: Center(
-                  child: SvgPicture.asset(
-                    AppAssets.mail,
-                    width: 18.sp,
-                    height: 18.sp,
-                  ),
+                  child: SvgPicture.asset(AppAssets.mail, width: 18.sp, height: 18.sp),
                 ),
               ),
               12.wBox,
@@ -243,29 +247,16 @@ class _HealthScoreCard extends StatelessWidget {
                   children: [
                     Text(
                       "Health Score",
-                      style: TextStyle(
-                        fontSize: 12.sp,
-                        color: AppColors.secondary,
-                      ),
+                      style: TextStyle(fontSize: 12.sp, color: AppColors.secondary),
                     ),
                     10.hBox,
                     Container(
                       width: double.infinity,
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 10.w,
-                        vertical: 4.h,
-                      ),
-                      decoration: BoxDecoration(
-                        color: AppColors.lightGray5,
-                        borderRadius: BorderRadius.circular(20.r),
-                      ),
+                      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 3.h),
+                      decoration: BoxDecoration(color: AppColors.lightGray5, borderRadius: BorderRadius.circular(20.r)),
                       child: Text(
                         "2 big events this week",
-                        style: TextStyle(
-                          fontSize: 11.sp,
-                          color: Colors.black,
-                          fontWeight: FontWeight.w600,
-                        ),
+                        style: TextStyle(fontSize: 11.sp, color: Colors.black, fontWeight: FontWeight.w600),
                       ),
                     ),
                   ],
@@ -316,11 +307,7 @@ class _CarouselDots extends StatelessWidget {
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                   )
-                : const LinearGradient(
-                    colors: [Colors.white, Colors.white],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
+                : const LinearGradient(colors: [Colors.white, Colors.white], begin: Alignment.topLeft, end: Alignment.bottomRight),
             borderRadius: BorderRadius.circular(4.r),
           ),
         );
@@ -371,11 +358,7 @@ class _CategoryRow extends ConsumerWidget {
 }
 
 class _CategoryItem extends StatelessWidget {
-  const _CategoryItem({
-    required this.asset,
-    required this.label,
-    required this.isSelected,
-  });
+  const _CategoryItem({required this.asset, required this.label, required this.isSelected});
   final String asset;
   final String label;
   final bool isSelected;
@@ -398,30 +381,20 @@ class _CategoryItem extends StatelessWidget {
                 Container(
                   width: 42.sp,
                   height: 42.sp,
-                  decoration: BoxDecoration(
-                    color: AppColors.gray2,
-                    borderRadius: BorderRadius.circular(12.r),
-                  ),
+                  decoration: BoxDecoration(color: AppColors.gray2, borderRadius: BorderRadius.circular(12.r)),
                   child: Center(
                     child: SvgPicture.asset(
                       asset,
                       width: 18.sp,
                       height: 18.sp,
-                      colorFilter: const ColorFilter.mode(
-                        Color(0xff2C2C2C),
-                        BlendMode.srcIn,
-                      ),
+                      colorFilter: const ColorFilter.mode(Color(0xff2C2C2C), BlendMode.srcIn),
                     ),
                   ),
                 ),
                 8.hBox,
                 Text(
                   label,
-                  style: TextStyle(
-                    fontSize: 12.sp,
-                    color: AppColors.black,
-                    fontWeight: FontWeight.w500,
-                  ),
+                  style: TextStyle(fontSize: 12.sp, color: AppColors.black, fontWeight: FontWeight.w500),
                 ),
               ],
             ),
@@ -442,11 +415,7 @@ class _QuickAccess extends StatelessWidget {
       children: [
         Text(
           "Quick Access",
-          style: TextStyle(
-            fontSize: 16.sp,
-            fontWeight: FontWeight.bold,
-            color: AppColors.blackLight,
-          ),
+          style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold, color: AppColors.blackLight),
         ),
         12.hBox,
         Row(
@@ -479,26 +448,15 @@ class _QuickAccess extends StatelessWidget {
                               borderRadius: BorderRadius.circular(12.r),
                             ),
                             child: Center(
-                              child: SvgPicture.asset(
-                                AppAssets.scanIcon,
-                                width: 18.sp,
-                                height: 18.sp,
-                              ),
+                              child: SvgPicture.asset(AppAssets.scanIcon, width: 18.sp, height: 18.sp),
                             ),
                           ),
                           Container(
                             height: 16.h,
                             width: 16.h,
-                            decoration: BoxDecoration(
-                              color: AppColors.lightGray13,
-                              shape: BoxShape.circle,
-                            ),
+                            decoration: BoxDecoration(color: AppColors.lightGray13, shape: BoxShape.circle),
                             child: Center(
-                              child: Icon(
-                                Icons.arrow_outward,
-                                size: 18.sp,
-                                color: AppColors.black,
-                              ),
+                              child: Icon(Icons.arrow_outward, size: 18.sp, color: AppColors.black),
                             ),
                           ),
                         ],
@@ -506,19 +464,12 @@ class _QuickAccess extends StatelessWidget {
                       10.hBox,
                       Text(
                         "Scan Document",
-                        style: TextStyle(
-                          fontSize: 13.sp,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.blackLight,
-                        ),
+                        style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: AppColors.blackLight),
                       ),
                       4.hBox,
                       Text(
                         "Digitize your paperwork in seconds.",
-                        style: TextStyle(
-                          fontSize: 11.sp,
-                          color: AppColors.secondary,
-                        ),
+                        style: TextStyle(fontSize: 11.sp, color: AppColors.secondary),
                       ),
                     ],
                   ),
@@ -554,26 +505,15 @@ class _QuickAccess extends StatelessWidget {
                               borderRadius: BorderRadius.circular(12.r),
                             ),
                             child: Center(
-                              child: SvgPicture.asset(
-                                AppAssets.reminderIcon,
-                                width: 18.sp,
-                                height: 18.sp,
-                              ),
+                              child: SvgPicture.asset(AppAssets.reminderIcon, width: 18.sp, height: 18.sp),
                             ),
                           ),
                           Container(
                             height: 16.h,
                             width: 16.h,
-                            decoration: BoxDecoration(
-                              color: AppColors.lightGray13,
-                              shape: BoxShape.circle,
-                            ),
+                            decoration: BoxDecoration(color: AppColors.lightGray13, shape: BoxShape.circle),
                             child: Center(
-                              child: Icon(
-                                Icons.arrow_outward,
-                                size: 18.sp,
-                                color: AppColors.black,
-                              ),
+                              child: Icon(Icons.arrow_outward, size: 18.sp, color: AppColors.black),
                             ),
                           ),
                         ],
@@ -581,19 +521,12 @@ class _QuickAccess extends StatelessWidget {
                       10.hBox,
                       Text(
                         "Add Reminder",
-                        style: TextStyle(
-                          fontSize: 13.sp,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.black,
-                        ),
+                        style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: AppColors.black),
                       ),
                       4.hBox,
                       Text(
                         "Never miss an important deadline.",
-                        style: TextStyle(
-                          fontSize: 11.sp,
-                          color: AppColors.secondary,
-                        ),
+                        style: TextStyle(fontSize: 11.sp, color: AppColors.secondary),
                       ),
                     ],
                   ),
@@ -609,9 +542,21 @@ class _QuickAccess extends StatelessWidget {
 
 // ─── Today's Reminders ────────────────────────────────────────────────────────
 
-class _TodaysReminders extends StatelessWidget {
+class _TodaysReminders extends ConsumerWidget {
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(reminderProvider);
+    final remindersList = state.data?.quickReminder ?? [];
+    final reminders = remindersList.take(2).toList();
+
+    if (state.isLoading && remindersList.isEmpty) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (remindersList.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -620,21 +565,13 @@ class _TodaysReminders extends StatelessWidget {
           children: [
             Text(
               AppStrings.todaysReminders,
-              style: TextStyle(
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w500,
-                color: AppColors.black,
-              ),
+              style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w500, color: AppColors.black),
             ),
             GestureDetector(
               onTap: () => context.pushNamed(AppRoutes.remindersSeeAll),
               child: Text(
                 AppStrings.seeAll,
-                style: TextStyle(
-                  fontSize: 14.sp,
-                  color: AppColors.purple,
-                  fontWeight: FontWeight.w500,
-                ),
+                style: TextStyle(fontSize: 14.sp, color: AppColors.purple, fontWeight: FontWeight.w500),
               ),
             ),
           ],
@@ -646,59 +583,93 @@ class _TodaysReminders extends StatelessWidget {
             borderRadius: BorderRadius.circular(24.r),
             border: Border.all(color: AppColors.lightGray4, width: 1.5),
           ),
-          child: Column(
-            children: [
-              GestureDetector(
+          child: ListView.separated(
+            shrinkWrap: true,
+            padding: EdgeInsets.zero,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: reminders.length,
+            separatorBuilder: (context, index) => Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.w),
+              child: const Divider(height: 1, color: AppColors.lightGray1),
+            ),
+            itemBuilder: (context, index) {
+              final reminder = reminders[index];
+              final categoryData = _getCategoryData(reminder.category ?? "");
+              final localDateTime = reminder.dateTime?.toLocal();
+              final timeStr = localDateTime != null ? DateFormat('hh:mm a').format(localDateTime) : "N/A";
+
+              return GestureDetector(
                 onTap: () => context.pushNamed(
                   AppRoutes.reminderDetails,
                   extra: {
-                    'icon': AppAssets.tablet,
-                    'iconBgColor': AppColors.lightOrange,
-                    'iconColor': AppColors.orange,
-                    'title': "Take Antibiotics",
-                    'subtitle': "8:00 AM • After Breakfast",
+                    'icon': categoryData['icon'],
+                    'iconBgColor': categoryData['bgColor'],
+                    'iconColor': categoryData['iconColor'],
+                    'title': reminder.title ?? "",
+                    'subtitle': "$timeStr • ${reminder.repeat ?? ""}",
                   },
                 ),
                 child: _ReminderTile(
-                  assetPath: AppAssets.tablet,
-                  iconBgColor: AppColors.lightOrange,
-                  title: AppStrings.takeAntibiotics,
-                  subtitle: AppStrings.afterBreakfast,
-                  badge: AppStrings.now,
-                  badgeBgColor: AppColors.orange,
-                  badgeTextColor: AppColors.white,
+                  assetPath: categoryData['icon'],
+                  iconBgColor: categoryData['bgColor'],
+                  iconColor: categoryData['iconColor'],
+                  title: reminder.title ?? "",
+                  subtitle: "$timeStr • ${reminder.repeat ?? ""}",
+                  badge: _getBadgeLabel(localDateTime),
+                  badgeBgColor: _getBadgeBgColor(localDateTime),
+                  badgeTextColor: _getBadgeTextColor(localDateTime),
                 ),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.w),
-                child: const Divider(height: 1, color: AppColors.lightGray1),
-              ),
-              GestureDetector(
-                onTap: () => context.pushNamed(
-                  AppRoutes.reminderDetails,
-                  extra: {
-                    'icon': AppAssets.medical,
-                    'iconBgColor': AppColors.lightBlueBox,
-                    'iconColor': AppColors.primary,
-                    'title': "Dr.Smith Chekup",
-                    'subtitle': "2:30 AM • Cardiology",
-                  },
-                ),
-                child: _ReminderTile(
-                  assetPath: AppAssets.medical,
-                  iconBgColor: AppColors.lightBlueBox,
-                  title: AppStrings.drSmithCheckup,
-                  subtitle: AppStrings.timeCheckup,
-                  badge: "TODAY",
-                  badgeBgColor: AppColors.badgeGray,
-                  badgeTextColor: AppColors.badgeGrayText,
-                ),
-              ),
-            ],
+              );
+            },
           ),
         ),
       ],
     );
+  }
+
+  Map<String, dynamic> _getCategoryData(String category) {
+    switch (category.toLowerCase()) {
+      case 'health':
+        return {'icon': AppAssets.health, 'bgColor': AppColors.primaryLight3, 'iconColor': AppColors.primary};
+      case 'events':
+        return {'icon': AppAssets.event, 'bgColor': AppColors.lightGray2, 'iconColor': Colors.black};
+      case 'warranty':
+        return {'icon': AppAssets.warranty, 'bgColor': AppColors.lightGray10, 'iconColor': Colors.black};
+      case 'money':
+        return {'icon': AppAssets.money, 'bgColor': AppColors.gray2, 'iconColor': Colors.black};
+      default:
+        return {'icon': AppAssets.other, 'bgColor': AppColors.lightGray6, 'iconColor': Colors.black};
+    }
+  }
+
+  String _getBadgeLabel(DateTime? date) {
+    if (date == null) return "LATER";
+    final now = DateTime.now();
+    if (date.year == now.year && date.month == now.month && date.day == now.day) {
+      if (date.difference(now).inMinutes.abs() < 60) return "NOW";
+      return "TODAY";
+    }
+    return "LATER";
+  }
+
+  Color _getBadgeBgColor(DateTime? date) {
+    if (date == null) return AppColors.badgeGray;
+    final now = DateTime.now();
+    if (date.year == now.year && date.month == now.month && date.day == now.day) {
+      if (date.difference(now).inMinutes.abs() < 60) return AppColors.orange;
+      return AppColors.badgeGray;
+    }
+    return AppColors.badgeGray;
+  }
+
+  Color _getBadgeTextColor(DateTime? date) {
+    if (date == null) return AppColors.badgeGrayText;
+    final now = DateTime.now();
+    if (date.year == now.year && date.month == now.month && date.day == now.day) {
+      if (date.difference(now).inMinutes.abs() < 60) return Colors.white;
+      return AppColors.badgeGrayText;
+    }
+    return AppColors.badgeGrayText;
   }
 }
 
@@ -706,6 +677,7 @@ class _ReminderTile extends StatelessWidget {
   const _ReminderTile({
     required this.assetPath,
     required this.iconBgColor,
+    required this.iconColor,
     required this.title,
     required this.subtitle,
     required this.badge,
@@ -715,6 +687,7 @@ class _ReminderTile extends StatelessWidget {
 
   final String assetPath;
   final Color iconBgColor;
+  final Color iconColor;
   final String title;
   final String subtitle;
   final String badge;
@@ -730,12 +703,9 @@ class _ReminderTile extends StatelessWidget {
           Container(
             width: 48.sp,
             height: 48.sp,
-            decoration: BoxDecoration(
-              color: iconBgColor,
-              borderRadius: BorderRadius.circular(14.r),
-            ),
+            decoration: BoxDecoration(color: iconBgColor, borderRadius: BorderRadius.circular(14.r)),
             child: Center(
-              child: SvgPicture.asset(assetPath, width: 20.sp, height: 20.sp),
+              child: SvgPicture.asset(assetPath, width: 20.sp, height: 20.sp, colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn)),
             ),
           ),
           12.wBox,
@@ -745,11 +715,7 @@ class _ReminderTile extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: TextStyle(
-                    fontSize: 15.sp,
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.blackLight,
-                  ),
+                  style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w500, color: AppColors.blackLight),
                 ),
                 4.hBox,
                 Text(
@@ -761,17 +727,10 @@ class _ReminderTile extends StatelessWidget {
           ),
           Container(
             padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
-            decoration: BoxDecoration(
-              color: badgeBgColor,
-              borderRadius: BorderRadius.circular(20.r),
-            ),
+            decoration: BoxDecoration(color: badgeBgColor, borderRadius: BorderRadius.circular(20.r)),
             child: Text(
               badge,
-              style: TextStyle(
-                color: badgeTextColor,
-                fontSize: 10.sp,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(color: badgeTextColor, fontSize: 10.sp, fontWeight: FontWeight.bold),
             ),
           ),
         ],

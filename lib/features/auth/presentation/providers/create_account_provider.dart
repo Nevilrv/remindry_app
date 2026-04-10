@@ -1,14 +1,24 @@
-import 'package:flutter/material.dart';
 import 'package:country_picker/country_picker.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:untitled1/services/api_services.dart';
 
-final createAccountProvider = ChangeNotifierProvider((ref) => CreateAccountProvider());
+import '../../../../core/constant/api_const.dart';
+import '../../../../routes/app_routes.dart';
+import '../../../../services/prefrense_services.dart';
+import '../../model/user_data_model.dart';
+
+final createAccountProvider = ChangeNotifierProvider.autoDispose((ref) => CreateAccountProvider());
 
 class CreateAccountProvider extends ChangeNotifier {
   final TextEditingController nameController = TextEditingController();
+  final TextEditingController lastNameController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
-  
+
   bool _showClearButton = false;
+  String _selectedGender = "Male";
   Country _selectedCountry = Country(
     phoneCode: "1",
     countryCode: "US",
@@ -24,9 +34,18 @@ class CreateAccountProvider extends ChangeNotifier {
 
   bool get showClearButton => _showClearButton;
   Country get selectedCountry => _selectedCountry;
+  String get selectedGender => _selectedGender;
 
   CreateAccountProvider() {
     phoneController.addListener(_onPhoneChanged);
+    clearAll();
+  }
+
+  void clearAll() {
+    nameController.clear();
+    lastNameController.clear();
+    phoneController.clear();
+    notifyListeners();
   }
 
   void _onPhoneChanged() {
@@ -42,8 +61,45 @@ class CreateAccountProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setGender(String gender) {
+    _selectedGender = gender;
+    notifyListeners();
+  }
+
   void clearPhone() {
     phoneController.clear();
+  }
+
+  createAccount({
+    required String firstName,
+    required String lastName,
+    required String countryCode,
+    required String phoneNumber,
+    required String gender,
+    required BuildContext context,
+  }) async {
+    String? token = await FirebaseMessaging.instance.getToken();
+    ApiResponse<UserResponse> response = await ApiService().post(
+      ApiConsts.createAccount,
+      data: {
+        "first_name": firstName,
+        "last_name": lastName,
+        "country_code": countryCode,
+        "phone_number": phoneNumber,
+        // "email": "jondea589@gmail.com",
+        "gender": selectedGender.toLowerCase(),
+        "fcm_token": token,
+      },
+      fromJson: (json) => UserResponse.fromJson(json),
+    );
+    if (response.statusCode == 200) {
+      await preferences.setUserData(response.data!);
+      await preferences.setString(SharedPreference.accessToken, response.data?.data?.token ?? "");
+      preferences.setBool(SharedPreference.login, true);
+      context.pushNamed(AppRoutes.verifyCode);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(response.message ?? "Failed to create account")));
+    }
   }
 
   @override
@@ -54,4 +110,3 @@ class CreateAccountProvider extends ChangeNotifier {
     super.dispose();
   }
 }
-

@@ -15,6 +15,7 @@ class AppAssets {
   static const String onboarding_3 = "assets/images/onboarding_3.png";
   static const String onboarding_4 = "assets/images/onboarding_4.png";
   static const String notificationIcon = "assets/images/notification-icon.svg";
+  static const String notification = "assets/images/notification.png";
   static const String alert = "assets/images/alert.svg";
   // Category icons
   static const String eventsIcon = "assets/images/events.svg";
@@ -89,6 +90,7 @@ class AppAssets {
   static const String star = "assets/icons/star.svg";
   static const String aiInsights = "assets/icons/aiInsights.svg";
   static const String welcomePremium = "assets/images/welcomePremium.svg";
+  static const String girl = "assets/images/girl.png";
 
   ///json
   static const String splashAnimation = "assets/json/Splashscreendata.json";
@@ -97,4 +99,12 @@ class AppAssets {
   static const String onboar2 = "assets/json/onboar2.json";
   static const String onb3 = "assets/json/onb3.json";
   static const String onbo4 = "assets/json/onbo4.json";
+
+  //png
+  static const String entaintament = "assets/images/entaintament.png";
+  static const String pizza = "assets/images/pizza.png";
+  static const String moneyPng = "assets/images/money.png";
+  static const String trolli = "assets/images/trolli.png";
+  static const String tv = "assets/images/tv.png";
+  static const String boy = "assets/images/boy.png";
 }

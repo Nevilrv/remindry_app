@@ -1,16 +1,14 @@
+import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:untitled1/core/constant/app_assets.dart';
 import 'package:untitled1/core/constant/app_strings.dart';
 import 'package:untitled1/core/constant/app_theme.dart';
-import 'package:untitled1/core/utils/widgets/common_app_bar_remindry.dart';
 import 'package:untitled1/core/extentions/extentions.dart';
-import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:file_picker/file_picker.dart';
-import 'dart:io';
+import 'package:untitled1/core/utils/widgets/common_app_bar_remindry.dart';
 
 class AiMessagePage extends StatefulWidget {
   const AiMessagePage({super.key});
@@ -24,30 +22,10 @@ class _AiMessagePageState extends State<AiMessagePage> {
   bool _showEmojiPicker = false;
   final FocusNode _focusNode = FocusNode();
   final List<Map<String, dynamic>> _messages = [
-    {
-      "isMe": false,
-      "message": "Hello Nice",
-      "time": "02:10 PM",
-      "sender": "Livechat",
-    },
-    {
-      "isMe": false,
-      "message": "I'm Remindry AI. How can I help you today? 💊",
-      "time": "02:10 PM",
-      "sender": "Livechat",
-    },
-    {
-      "isMe": true,
-      "message": "Scan this bill",
-      "time": "02:12 PM",
-      "sender": "Visitor",
-    },
-    {
-      "isMe": false,
-      "message": "I'll help you with that! Let me process your request...",
-      "time": "02:13 PM",
-      "sender": "Livechat",
-    },
+    {"isMe": false, "message": "Hello Nice", "time": "02:10 PM", "sender": "Livechat"},
+    {"isMe": false, "message": "I'm Remindry AI. How can I help you today? 💊", "time": "02:10 PM", "sender": "Livechat"},
+    {"isMe": true, "message": "Scan this bill", "time": "02:12 PM", "sender": "Visitor"},
+    {"isMe": false, "message": "I'll help you with that! Let me process your request...", "time": "02:13 PM", "sender": "Livechat"},
   ];
 
   void _sendMessage() {
@@ -85,10 +63,7 @@ class _AiMessagePageState extends State<AiMessagePage> {
             Container(
               width: 40.w,
               height: 4.h,
-              decoration: BoxDecoration(
-                color: const Color(0xffE2E8F0),
-                borderRadius: BorderRadius.circular(2.r),
-              ),
+              decoration: BoxDecoration(color: const Color(0xffE2E8F0), borderRadius: BorderRadius.circular(2.r)),
             ),
             24.hBox,
             Row(
@@ -100,9 +75,7 @@ class _AiMessagePageState extends State<AiMessagePage> {
                   onTap: () async {
                     Navigator.pop(context);
                     final picker = ImagePicker();
-                    final image = await picker.pickImage(
-                      source: ImageSource.camera,
-                    );
+                    final image = await picker.pickImage(source: ImageSource.camera);
                     if (image != null) _handleFileSelected(image.name);
                   },
                 ),
@@ -112,9 +85,7 @@ class _AiMessagePageState extends State<AiMessagePage> {
                   onTap: () async {
                     Navigator.pop(context);
                     final picker = ImagePicker();
-                    final image = await picker.pickImage(
-                      source: ImageSource.gallery,
-                    );
+                    final image = await picker.pickImage(source: ImageSource.gallery);
                     if (image != null) _handleFileSelected(image.name);
                   },
                 ),
@@ -123,9 +94,8 @@ class _AiMessagePageState extends State<AiMessagePage> {
                   label: "Documents",
                   onTap: () async {
                     Navigator.pop(context);
-                    final result = await FilePicker.platform.pickFiles();
-                    if (result != null)
-                      _handleFileSelected(result.files.single.name);
+                    final result = await FilePicker.pickFiles();
+                    if (result != null) _handleFileSelected(result.files.single.name);
                   },
                 ),
               ],
@@ -139,12 +109,7 @@ class _AiMessagePageState extends State<AiMessagePage> {
 
   void _handleFileSelected(String name) {
     setState(() {
-      _messages.add({
-        "isMe": true,
-        "message": "📎 Attached: $name",
-        "time": TimeOfDay.now().format(context),
-        "sender": "Visitor",
-      });
+      _messages.add({"isMe": true, "message": "📎 Attached: $name", "time": TimeOfDay.now().format(context), "sender": "Visitor"});
     });
   }
 
@@ -161,10 +126,7 @@ class _AiMessagePageState extends State<AiMessagePage> {
       },
       child: Scaffold(
         backgroundColor: AppColors.white,
-        appBar: const CommonAppBarRemindry(
-          title: AppStrings.askRemindry,
-          subtitle: AppStrings.joinRemindry,
-        ),
+        appBar: const CommonAppBarRemindry(title: AppStrings.askRemindry, subtitle: AppStrings.joinRemindry),
         body: Column(
           children: [
             // Messages
@@ -176,12 +138,7 @@ class _AiMessagePageState extends State<AiMessagePage> {
                   itemCount: _messages.length,
                   itemBuilder: (context, index) {
                     final msg = _messages[index];
-                    return _ChatBubble(
-                      isMe: msg['isMe'],
-                      message: msg['message'],
-                      time: msg['time'],
-                      sender: msg['sender'],
-                    );
+                    return _ChatBubble(isMe: msg['isMe'], message: msg['message'], time: msg['time'], sender: msg['sender']);
                   },
                 ),
               ),
@@ -226,9 +183,7 @@ class _AiMessagePageState extends State<AiMessagePage> {
               padding: EdgeInsets.only(
                 left: 20.w,
                 right: 20.w,
-                bottom: _showEmojiPicker
-                    ? 10
-                    : MediaQuery.of(context).padding.bottom + 10,
+                bottom: _showEmojiPicker ? 10 : MediaQuery.of(context).padding.bottom + 10,
                 top: 10.h,
               ),
               color: AppColors.white,
@@ -254,10 +209,7 @@ class _AiMessagePageState extends State<AiMessagePage> {
                         },
                         decoration: InputDecoration(
                           hintText: AppStrings.writeAMessage,
-                          hintStyle: TextStyle(
-                            color: AppColors.secondary,
-                            fontSize: 14.sp,
-                          ),
+                          hintStyle: TextStyle(color: AppColors.secondary, fontSize: 14.sp),
                           border: InputBorder.none,
                         ),
                       ),
@@ -270,29 +222,17 @@ class _AiMessagePageState extends State<AiMessagePage> {
                           _showEmojiPicker = !_showEmojiPicker;
                         });
                       },
-                      child: SvgPicture.asset(
-                        AppAssets.smile,
-                        height: 24.sp,
-                        width: 24.sp,
-                      ),
+                      child: SvgPicture.asset(AppAssets.smile, height: 24.sp, width: 24.sp),
                     ),
                     16.wBox,
                     GestureDetector(
                       onTap: _showAttachmentSheet,
-                      child: SvgPicture.asset(
-                        AppAssets.paperclip,
-                        height: 24.sp,
-                        width: 24.sp,
-                      ),
+                      child: SvgPicture.asset(AppAssets.paperclip, height: 24.sp, width: 24.sp),
                     ),
                     16.wBox,
                     GestureDetector(
                       onTap: _sendMessage,
-                      child: SvgPicture.asset(
-                        AppAssets.send,
-                        height: 24.sp,
-                        width: 24.sp,
-                      ),
+                      child: SvgPicture.asset(AppAssets.send, height: 24.sp, width: 24.sp),
                     ),
                   ],
                 ),
@@ -323,11 +263,7 @@ class _AiMessagePageState extends State<AiMessagePage> {
                       backspaceColor: AppColors.primary,
                       dividerColor: AppColors.primary,
                     ),
-                    skinToneConfig: SkinToneConfig(
-                      enabled: true,
-                      dialogBackgroundColor: Colors.white,
-                      indicatorColor: AppColors.primary,
-                    ),
+                    skinToneConfig: SkinToneConfig(enabled: true, dialogBackgroundColor: Colors.white, indicatorColor: AppColors.primary),
                     searchViewConfig: SearchViewConfig(),
                     bottomActionBarConfig: BottomActionBarConfig(
                       buttonColor: AppColors.lightGray2,
@@ -349,11 +285,7 @@ class _AttachmentOption extends StatelessWidget {
   final String label;
   final VoidCallback onTap;
 
-  const _AttachmentOption({
-    required this.icon,
-    required this.label,
-    required this.onTap,
-  });
+  const _AttachmentOption({required this.icon, required this.label, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -374,21 +306,14 @@ class _AttachmentOption extends StatelessWidget {
                 icon,
                 width: 24.sp,
                 height: 24.sp,
-                colorFilter: const ColorFilter.mode(
-                  AppColors.primary,
-                  BlendMode.srcIn,
-                ),
+                colorFilter: const ColorFilter.mode(AppColors.primary, BlendMode.srcIn),
               ),
             ),
           ),
           8.hBox,
           Text(
             label,
-            style: TextStyle(
-              fontSize: 12.sp,
-              color: const Color(0xff09090B),
-              fontWeight: FontWeight.w500,
-            ),
+            style: TextStyle(fontSize: 12.sp, color: const Color(0xff09090B), fontWeight: FontWeight.w500),
           ),
         ],
       ),
@@ -402,26 +327,17 @@ class _ChatBubble extends StatelessWidget {
   final String time;
   final String sender;
 
-  const _ChatBubble({
-    required this.isMe,
-    required this.message,
-    required this.time,
-    required this.sender,
-  });
+  const _ChatBubble({required this.isMe, required this.message, required this.time, required this.sender});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(bottom: 20.h),
       child: Column(
-        crossAxisAlignment: isMe
-            ? CrossAxisAlignment.end
-            : CrossAxisAlignment.start,
+        crossAxisAlignment: isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: [
           Row(
-            mainAxisAlignment: isMe
-                ? MainAxisAlignment.end
-                : MainAxisAlignment.start,
+            mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
             children: [
               if (!isMe) ...[
                 Container(
@@ -440,10 +356,7 @@ class _ChatBubble extends StatelessWidget {
                       AppAssets.aiTip,
                       height: 16.sp,
                       width: 16.sp,
-                      colorFilter: const ColorFilter.mode(
-                        AppColors.white,
-                        BlendMode.srcIn,
-                      ),
+                      colorFilter: const ColorFilter.mode(AppColors.white, BlendMode.srcIn),
                     ),
                   ),
                 ),
@@ -458,28 +371,15 @@ class _ChatBubble extends StatelessWidget {
           8.hBox,
           Container(
             padding: EdgeInsets.all(16.r),
-            constraints: BoxConstraints(
-              maxWidth: MediaQuery.of(context).size.width * 0.7,
-            ),
+            constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.7),
             decoration: BoxDecoration(
               color: isMe ? const Color(0xffEF4444) : AppColors.white,
               borderRadius: BorderRadius.circular(15.r),
-              boxShadow: isMe
-                  ? null
-                  : [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.02),
-                        blurRadius: 5,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
+              boxShadow: isMe ? null : [BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 5, offset: const Offset(0, 2))],
             ),
             child: Text(
               message,
-              style: TextStyle(
-                fontSize: 14.sp,
-                color: isMe ? AppColors.white : AppColors.black,
-              ),
+              style: TextStyle(fontSize: 14.sp, color: isMe ? AppColors.white : AppColors.black),
             ),
           ),
         ],
@@ -494,12 +394,7 @@ class _ChatCategoryChip extends StatelessWidget {
   final Color color;
   final Color textColor;
 
-  const _ChatCategoryChip({
-    required this.label,
-    required this.icon,
-    required this.color,
-    required this.textColor,
-  });
+  const _ChatCategoryChip({required this.label, required this.icon, required this.color, required this.textColor});
 
   @override
   Widget build(BuildContext context) {
@@ -513,20 +408,11 @@ class _ChatCategoryChip extends StatelessWidget {
       ),
       child: Row(
         children: [
-          SvgPicture.asset(
-            icon,
-            width: 16.sp,
-            height: 16.sp,
-            colorFilter: ColorFilter.mode(textColor, BlendMode.srcIn),
-          ),
+          SvgPicture.asset(icon, width: 16.sp, height: 16.sp, colorFilter: ColorFilter.mode(textColor, BlendMode.srcIn)),
           8.wBox,
           Text(
             label,
-            style: TextStyle(
-              fontSize: 12.sp,
-              fontWeight: FontWeight.w500,
-              color: textColor,
-            ),
+            style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: textColor),
           ),
         ],
       ),
